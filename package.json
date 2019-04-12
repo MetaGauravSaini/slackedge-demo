@@ -1,0 +1,25 @@
+{
+    "name": "slackedge",
+    "version": "1.0.0",
+    "description": "Custom bot integration for connecting Slack and ReferenceEdge.",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node index.js"
+    },
+    "keywords": [
+        "slack",
+        "bot"
+    ],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "body-parser": "^1.18.3",
+        "botkit": "^0.7.4",
+        "dotenv": "^7.0.0",
+        "express": "^4.16.4",
+        "jsforce": "^1.9.1",
+        "mongoose": "^5.5.0",
+        "open": "^6.0.0"
+    }
+}
