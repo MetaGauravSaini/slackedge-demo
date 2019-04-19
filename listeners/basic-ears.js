@@ -13,12 +13,29 @@ module.exports = controller => {
 
         try {
             const accList = await refedgeUtil.getAccounts(message.team_id, controller);
-            let accNames = '';
+            let replyBody = {
+                attachments: [{
+                    type: 'section',
+                    text: {
+                        type: 'mrkdwn',
+                        text: 'found following accounts.'
+                    }
+                },
+                {
+                    type: 'divider'
+                }],
+            }
 
             accList.records.forEach(acc => {
-                accNames += acc.Name + '\n';
+                reply.attachments.push({
+                    type: 'section',
+                    text: {
+                        type: 'mrkdwn',
+                        text: `${acc.Name}`
+                    }
+                });
             });
-            bot.reply(message, 'accounts found:\n' + accNames);
+            bot.reply(message, replyBody);
         } catch (err) {
             console.log(err);
         }
@@ -31,7 +48,7 @@ module.exports = controller => {
 
             if (!existingConn) {
                 const authUrl = connFactory.getAuthUrl(message.team_id);
-                bot.reply(message, 'click this url to connect\n' + authUrl);
+                bot.reply(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
             } else {
 
                 bot.startConversation(message, (err, convo) => {
