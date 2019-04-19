@@ -7,7 +7,7 @@ let openConnections = {};
 const oauth2 = new jsforce.OAuth2({
     clientId: process.env.SF_CLIENT_ID,
     clientSecret: process.env.SF_CLIENT_SECRET,
-    redirectUri: 'https://9a2bd736.ngrok.io/sfauth/callback'
+    redirectUri: 'https://slackedge.herokuapp.com/sfauth/callback'
 });
 
 async function findOrgByTeamId(teamId, botController) {
@@ -75,10 +75,8 @@ async function deleteOrg(teamId, botController) {
 
 module.exports = {
     getAuthUrl: (teamId) => {
-        let authUrl = oauth2.getAuthorizationUrl({ scope: 'api refresh_token' });
-        openUrl(
-            authUrl + '&state=' + teamId
-        );
+        let authUrl = oauth2.getAuthorizationUrl({ scope: 'api refresh_token web' });
+        openUrl(authUrl + '&state=' + teamId);
     },
     getConnection: async (teamId, botController) => {
 
