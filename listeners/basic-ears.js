@@ -13,8 +13,12 @@ module.exports = controller => {
 
         try {
             const accList = await refedgeUtil.getAccounts(message.team_id, controller);
-            console.log('accList', accList);
-            bot.reply(message, 'accounts found');
+            let accNames = '';
+
+            accList.records.forEach(acc => {
+                accNames += acc.Name + '\n';
+            });
+            bot.reply(message, 'accounts found:\n' + accNames);
         } catch (err) {
             console.log(err);
         }
