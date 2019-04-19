@@ -10,7 +10,7 @@ module.exports = controller => {
     });
 
     controller.hears(['show accounts'], 'direct_message,direct_mention,mention', async (bot, message) => {
-        
+
         try {
             const accList = await refedgeUtil.getAccounts(message.team_id, controller);
             console.log('accList', accList);
@@ -21,15 +21,13 @@ module.exports = controller => {
     });
 
     controller.hears(['connect to a salesforce org'], 'direct_message', async (bot, message) => {
-        console.log('msg received');
 
         try {
             let existingConn = await connFactory.getConnection(message.team_id, controller);
-            console.log('conn1:', existingConn);
 
             if (!existingConn) {
-                connFactory.getAuthUrl(message.team_id);
-                console.log('creating new connection...');
+                const authUrl = connFactory.getAuthUrl(message.team_id);
+                bot.reply(message, 'click this url to connect\n' + authUrl);
             } else {
 
                 bot.startConversation(message, (err, convo) => {
@@ -38,7 +36,6 @@ module.exports = controller => {
                         [{
                             pattern: bot.utterances.yes,
                             callback: async (response, convo) => {
-                                convo.say('Ok, Done');
 
                                 try {
                                     const revokeResult = await connFactory.revoke({
@@ -48,7 +45,8 @@ module.exports = controller => {
                                     }, controller);
 
                                     if (revokeResult === 'success') {
-                                        connFactory.getAuthUrl(message.team_id);
+                                        const authUrl = connFactory.getAuthUrl(message.team_id);
+                                        bot.reply(message, 'click this url to connect\n' + authUrl);
                                     } else {
                                         convo.say(revokeResult);
                                     }
