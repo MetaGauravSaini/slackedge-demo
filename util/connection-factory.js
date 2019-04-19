@@ -1,6 +1,5 @@
 
 const jsforce = require('jsforce');
-const { open } = require('openurl');
 const { postForm } = require('../common/request-util');
 
 let openConnections = {};
@@ -75,10 +74,8 @@ async function deleteOrg(teamId, botController) {
 
 module.exports = {
     getAuthUrl: (teamId) => {
-        console.log('teamId:', teamId);
         let authUrl = oauth2.getAuthorizationUrl({ scope: 'api refresh_token web' });
-        console.log('authUrl:', authUrl);
-        open(authUrl + '&state=' + teamId);
+        return (authUrl + '&state=' + teamId);
     },
     getConnection: async (teamId, botController) => {
 

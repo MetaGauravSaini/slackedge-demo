@@ -21,15 +21,13 @@ module.exports = controller => {
     });
 
     controller.hears(['connect to a salesforce org'], 'direct_message', async (bot, message) => {
-        console.log('msg received');
 
         try {
             let existingConn = await connFactory.getConnection(message.team_id, controller);
-            console.log('conn1:', existingConn);
 
             if (!existingConn) {
-                connFactory.getAuthUrl(message.team_id);
-                console.log('creating new connection...');
+                const authUrl = connFactory.getAuthUrl(message.team_id);
+                bot.reply(message, 'click this url to connect\n' + authUrl);
             } else {
 
                 bot.startConversation(message, (err, convo) => {
