@@ -1,30 +1,27 @@
 
 const Botkit = require('botkit');
 const mongoProvider = require('./db/mongo-provider')({
-    mongoUri: `mongodb+srv://gaurav-saini:${process.env.MONGO_PW}@slackedge-test-skasp.mongodb.net/test?retryWrites=true`
+    mongoUri: `mongodb+srv://gaurav-saini:${process.env.MONGO_PW}@slackedge-test-skasp.mongodb.net/${process.env.DB_NAME}?retryWrites=true`
 });
 
+const saveTeamUtil = require('./util/save-team');
+const eventListeners = require('./listeners/events');
 const joinTeamListener = require('./listeners/join-team');
-const helloListener = require('./listeners/hello');
-const saveUserUtil = require('./util/save-user');
+const basicListener = require('./listeners/basic-ears');
 
 let botCfg = {
     clientId: process.env.SLACK_CLIENT_ID,
     clientSecret: process.env.SLACK_CLIENT_SECRET,
-    scopes: ['bot', 'team:read'],
+    scopes: ['bot', 'team:read', 'users:read', 'users:read.email'],
     storage: mongoProvider
 };
 
 let controller = Botkit.slackbot(botCfg);
 controller.startTicking();
 
-/*
-user_channel_join
-conversations
-*/
-
-saveUserUtil(controller);
+saveTeamUtil(controller);
+eventListeners(controller);
 joinTeamListener(controller);
-helloListener(controller);
+basicListener(controller);
 
 module.exports = controller;

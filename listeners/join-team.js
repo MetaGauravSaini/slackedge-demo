@@ -3,7 +3,7 @@ module.exports = controller => {
 
     controller.on('onboard', bot => {
 
-        bot.startPrivateConversation({user: bot.config.createdBy}, (err, convo) => {
+        bot.startPrivateConversation({ user: bot.config.createdBy }, (err, convo) => {
 
             if (err) {
                 console.log(err);

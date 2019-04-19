@@ -57,7 +57,7 @@ function setupStorage(table) {
             return table.find({}).lean().exec(cb);
         },
         delete: (id, cb) => {
-            return table.remove({ id: id }).lean().exec(cb);
+            return table.deleteOne({ id: id }).lean().exec(cb);
         },
         find: (data, cb, options) => {
             return table.find(data, null, options).lean().exec(cb);

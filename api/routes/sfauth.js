@@ -1,16 +1,30 @@
 
 const connFactory = require('../../util/connection-factory');
-const emitter = require('../../common/event-emitter');
+const { saveTeamId } = require('../../util/refedge');
 
 module.exports = (app, controller) => {
 
-    app.get('/sfauth/callback', (req, res) => {
-        console.log('auth callback');
-        let conn = connFactory.connect(req.query.code, controller, );
-        res.redirect(conn.instanceUrl);
+    app.get('/sfauth/callback', async (req, res) => {
 
-        emitter.on('init-sf-auth', data => {
-            console.log(data);
-        });
+        try {
+
+            if (req.query.error) {
+                console.log('error:', req.query.error);
+                res.status(400).json({
+                    status: 400,
+                    ok: false,
+                    message: 'auth failed'
+                });
+            }
+
+            if (req.query.code && req.query.state) {
+                let conn = await connFactory.connect(req.query.code, controller, req.query.state);
+                saveTeamId(conn, req.query.state);
+                res.status(302);
+                res.redirect('/auth-success.html');
+            }
+        } catch (err) {
+            console.log('Error:', err);
+        }
     });
 }

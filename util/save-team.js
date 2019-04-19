@@ -12,6 +12,7 @@ module.exports = controller => {
                     createdBy: auth.identity.user_id,
                     url: auth.identity.url,
                     name: auth.identity.team,
+                    is_migrating: false
                 };
                 isNew = true;
             }

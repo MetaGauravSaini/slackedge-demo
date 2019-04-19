@@ -2,8 +2,8 @@
 module.exports = (app, controller) => {
 
     app.post('/post-message', (req, res) => {
-        // fwd msgs received from SF to slack
-        // to get message, team id and org id in req body
-        console.log(req.body);
+        // to get message, teamId, userEmail/channelId and orgId in req body
+        controller.trigger('post-message', [req.body]);
+        res.status(200).json({ ok: true });
     });
 }
