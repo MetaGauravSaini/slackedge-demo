@@ -13,27 +13,10 @@ module.exports = controller => {
 
         try {
             const accList = await refedgeUtil.getAccounts(message.team_id, controller);
-            let replyBody = {
-                attachments: [{
-                    type: 'section',
-                    text: {
-                        type: 'mrkdwn',
-                        text: 'found following accounts.'
-                    }
-                },
-                {
-                    type: 'divider'
-                }],
-            }
+            let replyBody = 'found following accounts.';
 
             accList.records.forEach(acc => {
-                replyBody.attachments.push({
-                    type: 'section',
-                    text: {
-                        type: 'mrkdwn',
-                        text: `${acc.Name}`
-                    }
-                });
+                replyBody += `${acc.Name}\n`;
             });
             bot.reply(message, replyBody);
         } catch (err) {
