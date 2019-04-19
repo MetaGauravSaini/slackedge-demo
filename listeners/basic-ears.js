@@ -27,7 +27,7 @@ module.exports = controller => {
             }
 
             accList.records.forEach(acc => {
-                reply.attachments.push({
+                replyBody.attachments.push({
                     type: 'section',
                     text: {
                         type: 'mrkdwn',
@@ -67,7 +67,7 @@ module.exports = controller => {
 
                                     if (revokeResult === 'success') {
                                         const authUrl = connFactory.getAuthUrl(message.team_id);
-                                        bot.reply(message, 'click this url to connect\n' + authUrl);
+                                        bot.reply(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
                                     } else {
                                         convo.say(revokeResult);
                                     }
