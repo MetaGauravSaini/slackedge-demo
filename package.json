@@ -20,7 +20,8 @@
         "express": "^4.16.4",
         "jsforce": "^1.9.1",
         "mongoose": "^5.5.0",
-        "open": "^6.0.0"
+        "open": "^6.0.0",
+        "openurl": "^1.1.1"
     },
     "engines": {
         "node": "10.15.1",

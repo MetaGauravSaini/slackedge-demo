@@ -1,6 +1,6 @@
 
 const jsforce = require('jsforce');
-const openUrl = require('open');
+const { open } = require('openurl');
 const { postForm } = require('../common/request-util');
 
 let openConnections = {};
@@ -78,7 +78,7 @@ module.exports = {
         console.log('teamId:', teamId);
         let authUrl = oauth2.getAuthorizationUrl({ scope: 'api refresh_token web' });
         console.log('authUrl:', authUrl);
-        openUrl(authUrl + '&state=' + teamId);
+        open(authUrl + '&state=' + teamId);
     },
     getConnection: async (teamId, botController) => {
 
