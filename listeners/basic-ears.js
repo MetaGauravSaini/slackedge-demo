@@ -10,18 +10,26 @@ module.exports = controller => {
     });
 
     controller.hears(['show accounts'], 'direct_message,direct_mention,mention', async (bot, message) => {
-        const accList = await refedgeUtil.getAccounts(message.team_id, controller);
-        console.log('accList', accList);
-        bot.reply(message, 'accounts found');
+        
+        try {
+            const accList = await refedgeUtil.getAccounts(message.team_id, controller);
+            console.log('accList', accList);
+            bot.reply(message, 'accounts found');
+        } catch (err) {
+            console.log(err);
+        }
     });
 
     controller.hears(['connect to a salesforce org'], 'direct_message', async (bot, message) => {
+        console.log('msg received');
 
         try {
             let existingConn = await connFactory.getConnection(message.team_id, controller);
+            console.log('conn1:', existingConn);
 
             if (!existingConn) {
                 connFactory.getAuthUrl(message.team_id);
+                console.log('creating new connection...');
             } else {
 
                 bot.startConversation(message, (err, convo) => {

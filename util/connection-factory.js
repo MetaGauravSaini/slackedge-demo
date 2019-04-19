@@ -75,7 +75,9 @@ async function deleteOrg(teamId, botController) {
 
 module.exports = {
     getAuthUrl: (teamId) => {
+        console.log('teamId:', teamId);
         let authUrl = oauth2.getAuthorizationUrl({ scope: 'api refresh_token web' });
+        console.log('authUrl:', authUrl);
         openUrl(authUrl + '&state=' + teamId);
     },
     getConnection: async (teamId, botController) => {
