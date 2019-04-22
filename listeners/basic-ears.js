@@ -44,7 +44,8 @@ module.exports = controller => {
         } catch (err) {
 
             if (err.message === 'not connected to salesforce.') {
-                bot.reply(message, `You're not connected to a Salesforce org. Would you like to do that now?`);
+                const authUrl = connFactory.getAuthUrl(message.team_id);
+                bot.reply(message, `You're not connected to a Salesforce org. Would you like to do that now?\n<${authUrl}|Connect to Salesforce>`);
             }
             console.log(err);
         }
