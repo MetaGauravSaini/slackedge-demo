@@ -3,6 +3,7 @@ module.exports = controller => {
 
     controller.on('interactive_message_callback', (bot, message) => {
         console.log('interactive message reply:', message);
+        bot.reply(message, 'Thank you!!');
     });
 
     controller.on('onboard', bot => {
