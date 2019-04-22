@@ -6,7 +6,6 @@ const mongoProvider = require('./db/mongo-provider')({
 
 const saveTeamUtil = require('./util/save-team');
 const eventListeners = require('./listeners/events');
-const joinTeamListener = require('./listeners/join-team');
 const basicListener = require('./listeners/basic-ears');
 
 let botCfg = {
@@ -21,7 +20,6 @@ controller.startTicking();
 
 saveTeamUtil(controller);
 eventListeners(controller);
-joinTeamListener(controller);
 basicListener(controller);
 
 module.exports = controller;

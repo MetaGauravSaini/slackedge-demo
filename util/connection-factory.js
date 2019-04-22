@@ -52,7 +52,7 @@ async function getExistingConnection(teamId, botController) {
 function saveOrg(data, botController) {
 
     try {
-        const saveResult = botController.storage.orgs.save(data);
+        botController.storage.orgs.save(data);
     } catch (err) {
         throw err;
     }
