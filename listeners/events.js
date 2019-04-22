@@ -1,6 +1,10 @@
 
 module.exports = controller => {
 
+    controller.on('interactive_message_callback', (bot, message) => {
+        console.log('interactive message reply:', message);
+    });
+
     controller.on('onboard', bot => {
 
         bot.startPrivateConversation({ user: bot.config.createdBy }, (err, convo) => {

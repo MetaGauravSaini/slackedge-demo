@@ -13,10 +13,32 @@ module.exports = controller => {
 
         try {
             const accList = await refedgeUtil.getAccounts(message.team_id, controller);
-            let replyBody = 'found following accounts.\n';
+            let replyBody = {
+                text: 'Found following accounts.',
+                attachments: []
+            };
 
             accList.records.forEach(acc => {
-                replyBody += `${acc.Name}\n`;
+                // replyBody += `${acc.Name}\n`;
+                replyBody.attachments.push({
+                    title: acc.Name,
+                    callback_id: '123',
+                    attachment_type: 'default',
+                    actions: [
+                        {
+                            "name":"yes",
+                            "text": "Yes",
+                            "value": "yes",
+                            "type": "button",
+                        },
+                        {
+                            "name":"no",
+                            "text": "No",
+                            "value": "no",
+                            "type": "button",
+                        }
+                    ]
+                });
             });
             bot.reply(message, replyBody);
         } catch (err) {
