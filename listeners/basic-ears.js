@@ -19,7 +19,6 @@ module.exports = controller => {
             };
 
             accList.records.forEach(acc => {
-                replyBody += `${acc.Name}\n`;
                 replyBody.attachments.push({
                     title: acc.Name,
                     fields: [
