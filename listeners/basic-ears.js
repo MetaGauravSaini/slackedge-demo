@@ -13,37 +13,12 @@ module.exports = controller => {
 
         try {
             const accList = await refedgeUtil.getAccounts(message.team_id, controller);
-            let replyBody = {
-                text: 'found following accounts.',
-                attachments: []
-            };
+            let replyBody = 'found following accounts.\n';
 
             accList.records.forEach(acc => {
-                replyBody.attachments.push({
-                    title: acc.Name,
-                    fields: [
-                        {
-                            title: 'Industry',
-                            value: acc.Industry,
-                            short: true
-                        }
-                    ]
-                });
-                /* replyBody.attachments.push({
-                    title: 'Request account as a Reference.',
-                    callback_id: 'requestAccount',
-                    attachment_type: "default",
-                    actions: [
-                        {
-                            name: 'request',
-                            text: 'Request',
-                            type: 'button',
-                            value: acc.Id
-                        }
-                    ]
-                }); */
+                replyBody += `${acc.Name}\n`;
             });
-            bot.replyInteractive(message, replyBody);
+            bot.reply(message, replyBody);
         } catch (err) {
 
             if (err.message === 'not connected to salesforce.') {
