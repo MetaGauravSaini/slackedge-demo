@@ -22,7 +22,7 @@ module.exports = controller => {
                 // replyBody += `${acc.Name}\n`;
                 replyBody.attachments.push({
                     title: acc.Name,
-                    callback_id: '123',
+                    callback_id: acc.Id,
                     attachment_type: 'default',
                     actions: [
                         {
