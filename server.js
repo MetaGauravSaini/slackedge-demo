@@ -5,7 +5,7 @@ const botController = require('./bot');
 const express = require('express');
 const app = express();
 
-const uninstallMiddleware = require('./api/middleware/uninstall');
+// const uninstallMiddleware = require('./api/middleware/uninstall');
 // const gridMiddleware = require('./api/middleware/grid-migration');
 const corsMiddleware = require('./api/middleware/cors');
 const errorHandlerMiddleware = require('./api/middleware/error-handler');
@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 app.use(express.static('public'));
 
 app.use(corsMiddleware);
-app.use(uninstallMiddleware);
+// app.use(uninstallMiddleware);
 // app.use(gridMiddleware);
 
 let routersDir = require('path').join(__dirname, 'api/routes');

@@ -1,5 +1,6 @@
 
 const connFactory = require('../util/connection-factory');
+const logger = require('../common/logger');
 
 module.exports = {
     getAccounts: async (teamId, botController) => {
@@ -15,7 +16,7 @@ module.exports = {
             if (!result.done) {
                 // you can use the locator to fetch next records set.
                 // Connection#queryMore()
-                console.log("next records URL : " + result.nextRecordsUrl);
+                // console.log('next records URL:', result.nextRecordsUrl);
             }
             return result;
         } catch (err) {
@@ -29,7 +30,7 @@ module.exports = {
             (err, res) => {
 
                 if (err) {
-                    console.log('save error:', err);
+                    logger.log(err);
                 }
             }
         );

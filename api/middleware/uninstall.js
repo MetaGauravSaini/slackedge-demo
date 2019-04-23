@@ -1,6 +1,7 @@
 
 const connFactory = require('../../util/connection-factory');
 const controller = require('../../bot');
+const logger = require('../../common/logger');
 
 module.exports = async (req, res, next) => {
 
@@ -15,12 +16,12 @@ module.exports = async (req, res, next) => {
                     refreshToken: existingConn.refreshToken,
                     teamId: req.body.team_id
                 }, controller);
-                console.log('delete org data result:', revokeResult);
+                logger.log(`delete org data result: ${revokeResult}`);
             }
             const delResult = await controller.storage.teams.delete(req.body.team_id);
-            console.log('delete org team result:', delResult);
+            logger.log(`delete org team result: ${delResult}`);
         } catch (err) {
-            return console.log(err);
+            return logger.log(err);
         }
         res.status(200);
         res.end('');

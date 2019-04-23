@@ -1,6 +1,7 @@
 
 const jsforce = require('jsforce');
 const { postForm } = require('../common/request-util');
+const logger = require('../common/logger');
 
 let openConnections = {};
 const oauth2 = new jsforce.OAuth2({
@@ -37,7 +38,7 @@ async function getExistingConnection(teamId, botController) {
                     orgs[0].access_token = accessToken;
                     saveOrg(orgs[0], botController);
                 } catch (err) {
-                    console.log('connection refresh error:', err);
+                    logger.log(`connection refresh error: ${err}`);
                 }
             });
             openConnections[teamId] = conn;
@@ -114,7 +115,7 @@ module.exports = {
                         saveOrg(org, botController);
                     }
                 } catch (err) {
-                    console.log('connection refresh error:', err);
+                    logger.log(`connection refresh error: ${err}`);
                 }
             });
 

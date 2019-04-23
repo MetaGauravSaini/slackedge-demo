@@ -1,4 +1,6 @@
 
+const logger = require('../../common/logger');
+
 module.exports = {
     notFound: (req, res, next) => {
         const err = new Error('not found!!');
@@ -6,7 +8,7 @@ module.exports = {
         next(err);
     },
     internalError: (error, req, res, next) => {
-        console.log(error);
+        logger.log(error);
         res.status(error.status || 500).json({
             status: error.status || 500,
             message: error.message

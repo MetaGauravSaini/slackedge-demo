@@ -1,9 +1,10 @@
 
+const logger = require('../common/logger');
+
 module.exports = controller => {
 
-    controller.on('interactive_message_callback', (bot, message) => {
-        console.log('interactive message reply:', message);
-        bot.reply(message, 'Thank you!!');
+    controller.on('app_uninstalled', data => {
+        console.log('app uninstalled:', data);
     });
 
     controller.on('onboard', bot => {
@@ -11,7 +12,7 @@ module.exports = controller => {
         bot.startPrivateConversation({ user: bot.config.createdBy }, (err, convo) => {
 
             if (err) {
-                console.log(err);
+                logger.log(err);
             } else {
                 convo.say('I am a bot. I have joined your workspace!');
             }
@@ -26,7 +27,7 @@ module.exports = controller => {
                 const team = await controller.storage.teams.get(data.teamId);
 
                 if (!team) {
-                    return console.log('team not found, provided id:', data.teamId);
+                    return logger.log(`team not found, provided id: ${data.teamId}`);
                 }
                 const bot = controller.spawn(team.bot);
 
@@ -36,17 +37,17 @@ module.exports = controller => {
                 }, (err, result) => {
 
                     if (err) {
-                        console.log('err:', err);
+                        logger.log(err);
                     }
 
                     if (!result) {
-                        console.log('user not found, provided email:', data.userEmail);
+                        logger.log(`user not found, provided email: ${data.userEmail}`);
                     }
 
                     bot.startPrivateConversation({ user: result.user.id }, (err, convo) => {
 
                         if (err) {
-                            console.log(err);
+                            logger.log(err);
                         } else {
                             convo.say(data.message);
                         }
@@ -54,7 +55,7 @@ module.exports = controller => {
                 });
             }
         } catch (err) {
-            console.log(err);
+            logger.log(err);
         }
     });
 }

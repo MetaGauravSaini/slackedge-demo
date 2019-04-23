@@ -1,6 +1,7 @@
 
 const connFactory = require('../util/connection-factory');
 const refedgeUtil = require('../util/refedge');
+const logger = require('../common/logger');
 
 module.exports = controller => {
 
@@ -19,24 +20,13 @@ module.exports = controller => {
             };
 
             accList.records.forEach(acc => {
-                // replyBody += `${acc.Name}\n`;
                 replyBody.attachments.push({
                     title: acc.Name,
                     callback_id: acc.Id,
                     attachment_type: 'default',
                     actions: [
-                        {
-                            "name":"yes",
-                            "text": "Yes",
-                            "value": "yes",
-                            "type": "button",
-                        },
-                        {
-                            "name":"no",
-                            "text": "No",
-                            "value": "no",
-                            "type": "button",
-                        }
+                        { name: 'yes', text: 'Yes', value: 'yes', type: 'button' },
+                        { name: 'no', text: 'No', value: 'no', type: 'button' }
                     ]
                 });
             });
@@ -46,8 +36,9 @@ module.exports = controller => {
             if (err.message === 'not connected to salesforce.') {
                 const authUrl = connFactory.getAuthUrl(message.team_id);
                 bot.reply(message, `You're not connected to a Salesforce org. Would you like to do that now?\n<${authUrl}|Connect to Salesforce>`);
+            } else {
+                logger.log(err);
             }
-            console.log(err);
         }
     });
 
@@ -79,10 +70,11 @@ module.exports = controller => {
                                         const authUrl = connFactory.getAuthUrl(message.team_id);
                                         bot.reply(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
                                     } else {
-                                        convo.say(revokeResult);
+                                        // convo.say(revokeResult);
+                                        // log result
                                     }
                                 } catch (err) {
-                                    console.log('revoke error:', err);
+                                    logger.log(`revoke error: ${err}`);
                                 }
                                 convo.next();
                             }
@@ -105,7 +97,7 @@ module.exports = controller => {
                 });
             }
         } catch (err) {
-            console.log('error:', err);
+            logger.log(err);
         }
     });
 }

@@ -7,6 +7,7 @@ const mongoProvider = require('./db/mongo-provider')({
 const saveTeamUtil = require('./util/save-team');
 const eventListeners = require('./listeners/events');
 const basicListener = require('./listeners/basic-ears');
+const interactiveListener = require('./listeners/interactive');
 
 let botCfg = {
     clientId: process.env.SLACK_CLIENT_ID,
@@ -21,5 +22,6 @@ controller.startTicking();
 saveTeamUtil(controller);
 eventListeners(controller);
 basicListener(controller);
+interactiveListener(controller);
 
 module.exports = controller;
