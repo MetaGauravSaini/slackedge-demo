@@ -42,50 +42,25 @@ function createModel(db, table) {
 }
 
 function setupStorage(table) {
-    
-    if (table === 'orgs') {
-        return {
-            get: (id, teamId, cb) => {
-                return table.findOne({ id: id, team_id: teamId }).lean().exec(cb);
-            },
-            save: (data, cb) => {
-                return table
-                    .findOneAndUpdate({ id: data.id, team_id: data.team_id }, data, {
-                        upsert: true,
-                        new: true
-                    }).lean().exec(cb);
-            },
-            all: cb => {
-                return table.find({}).lean().exec(cb);
-            },
-            delete: (id, teamId, cb) => {
-                return table.deleteOne({ id: id, team_id: teamId }).lean().exec(cb);
-            },
-            find: (data, cb, options) => {
-                return table.find(data, null, options).lean().exec(cb);
-            }
-        };
-    } else {
-        return {
-            get: (id, cb) => {
-                return table.findOne({ id: id }).lean().exec(cb);
-            },
-            save: (data, cb) => {
-                return table
-                    .findOneAndUpdate({ id: data.id }, data, {
-                        upsert: true,
-                        new: true
-                    }).lean().exec(cb);
-            },
-            all: cb => {
-                return table.find({}).lean().exec(cb);
-            },
-            delete: (id, cb) => {
-                return table.deleteOne({ id: id }).lean().exec(cb);
-            },
-            find: (data, cb, options) => {
-                return table.find(data, null, options).lean().exec(cb);
-            }
-        };
-    }
+    return {
+        get: (id, cb) => {
+            return table.findOne({ id: id }).lean().exec(cb);
+        },
+        save: (data, cb) => {
+            return table
+                .findOneAndUpdate({ id: data.id }, data, {
+                    upsert: true,
+                    new: true
+                }).lean().exec(cb);
+        },
+        all: cb => {
+            return table.find({}).lean().exec(cb);
+        },
+        delete: (id, cb) => {
+            return table.deleteOne({ id: id }).lean().exec(cb);
+        },
+        find: (data, cb, options) => {
+            return table.find(data, null, options).lean().exec(cb);
+        }
+    };
 }

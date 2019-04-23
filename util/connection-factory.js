@@ -34,7 +34,6 @@ async function getExistingConnection(teamId, botController) {
             });
 
             conn.on('refresh', (accessToken, res) => {
-                console.log('conn refreshed');
                 try {
                     orgs[0].access_token = accessToken;
                     saveOrg(orgs[0], botController);
@@ -66,7 +65,7 @@ async function deleteOrg(teamId, botController) {
         let orgs = await findOrgByTeamId(teamId, botController);
 
         if (orgs && orgs.length > 0) {
-            let delResult = await botController.storage.orgs.delete(orgs[0].id, teamId);
+            let delResult = await botController.storage.orgs.delete(orgs[0].id);
             return 'success';
         }
     } catch (err) {
@@ -107,7 +106,6 @@ module.exports = {
             conn = new jsforce.Connection({ oauth2: oauth2 });
 
             conn.on('refresh', async (accessToken, res) => {
-                console.log('conn refreshed');
                 try {
                     let orgs = await findOrgByTeamId(teamId, botController);
 
