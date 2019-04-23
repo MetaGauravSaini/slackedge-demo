@@ -5,10 +5,12 @@
 // mongoose.set('useFindAndModify', false);
 // let db = mongoose.createConnection(`mongodb+srv://gaurav-saini:${process.env.MONGO_PW}@slackedge-test-skasp.mongodb.net/se-logs?retryWrites=true`);
 
-
-
 module.exports = {
-    log: data => {
-        console.log(data);
+    log: (...messages) => {
+        console.log('-----');
+        messages.forEach(m => {
+            console.log(m);
+        });
+        console.log('-----');
     }
 };

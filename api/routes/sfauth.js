@@ -11,7 +11,7 @@ module.exports = (app, controller) => {
 
             if (req.query.error) {
                 logger.log('salesforce auth error:', req.query.error);
-                res.status(400).json({
+                res.status(401).json({
                     status: 400,
                     ok: false,
                     message: 'auth failed'
@@ -19,8 +19,9 @@ module.exports = (app, controller) => {
             }
 
             if (req.query.code && req.query.state) {
+                console.log('auth team id:', req.query.state);
                 let conn = await connFactory.connect(req.query.code, controller, req.query.state);
-                saveTeamId(conn, req.query.state);
+                // saveTeamId(conn, req.query.state);
                 res.status(302);
                 res.redirect('/auth-success.html');
             }

@@ -74,7 +74,7 @@ module.exports = controller => {
                                         // log result
                                     }
                                 } catch (err) {
-                                    logger.log(`revoke error: ${err}`);
+                                    logger.log('revoke error:', err);
                                 }
                                 convo.next();
                             }
