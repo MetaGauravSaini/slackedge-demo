@@ -9,6 +9,7 @@ const eventListeners = require('./listeners/events');
 const basicListener = require('./listeners/basic-ears');
 const interactiveListener = require('./listeners/interactive');
 const { checkTeamMigration } = require('./listeners/middleware/migration-filter');
+const logger = require('./common/logger');
 
 let botCfg = {
     clientId: process.env.SLACK_CLIENT_ID,
