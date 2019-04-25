@@ -2,15 +2,16 @@
 const connFactory = require('../util/connection-factory');
 const refedgeUtil = require('../util/refedge');
 const logger = require('../common/logger');
+const { filterMiddleware } = require('./middleware/migration-filter');
 
 module.exports = controller => {
 
-    controller.hears(['^hello$'], 'direct_message,direct_mention', (bot, message) => {
+    controller.hears(['^hello$'], 'direct_message,direct_mention', filterMiddleware, (bot, message) => {
         // console.log(bot.team_info.id == message.team_id);
         bot.reply(message, `hi, you can invite me to the channel for Customer Reference Team to receive updates!`);
     });
 
-    controller.hears(['show accounts'], 'direct_message,direct_mention,mention', async (bot, message) => {
+    controller.hears(['show accounts'], 'direct_message,direct_mention,mention', filterMiddleware, async (bot, message) => {
 
         try {
             const accList = await refedgeUtil.getAccounts(message.team_id, controller);
@@ -42,7 +43,7 @@ module.exports = controller => {
         }
     });
 
-    controller.hears(['connect to a salesforce org'], 'direct_message', async (bot, message) => {
+    controller.hears(['connect to a salesforce org'], 'direct_message', filterMiddleware, async (bot, message) => {
 
         try {
             let existingConn = await connFactory.getConnection(message.team_id, controller);

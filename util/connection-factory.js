@@ -13,7 +13,7 @@ const oauth2 = new jsforce.OAuth2({
 async function findOrgByTeamId(teamId, botController) {
 
     try {
-        let orgs = await botController.storage.orgs.find({ team_id: teamId });
+        let orgs = await botController.storage.orgs.get(teamId);
         return orgs;
     } catch (err) {
         throw err;
@@ -62,19 +62,15 @@ function saveOrg(data, botController) {
 async function deleteOrg(teamId, botController) {
 
     try {
-        let orgs = await findOrgByTeamId(teamId, botController);
-
-        if (orgs && orgs.length > 0) {
-            let delResult = await botController.storage.orgs.delete(orgs[0].id);
-            return 'success';
-        }
+        let delResult = await botController.storage.orgs.delete(teamId);
+        return 'success';
     } catch (err) {
         throw err;
     }
 }
 
 module.exports = {
-    getAuthUrl: (teamId) => {
+    getAuthUrl: teamId => {
         let authUrl = oauth2.getAuthorizationUrl({ scope: 'api refresh_token web' });
         return (authUrl + '&state=' + teamId);
     },
@@ -120,12 +116,12 @@ module.exports = {
 
             const userInfo = await conn.authorize(authCode);
             let org = {
-                id: userInfo.organizationId,
+                id: teamId,
                 access_token: conn.accessToken,
                 refresh_token: conn.refreshToken,
                 instance_url: conn.instanceUrl,
                 user_id: userInfo.id,
-                team_id: teamId,
+                org_id: userInfo.organizationId,
                 revoke_url: conn.oauth2.revokeServiceUrl
             };
             saveOrg(org, botController);

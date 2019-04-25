@@ -6,8 +6,11 @@ module.exports = (app, controller) => {
             res.redirect(controller.getAuthorizeURL());
         },
         authorize: (req, res) => {
-            let code = req.query.code; // check for error query param - req.query.error
-            let state = req.query.state; // use state for verifying genuine requests
+            let code = req.query.code;
+
+            if (!req.query.state || process.env.STATE != req.query.state) {
+                // return res.status(401).json({ ok: false, message: 'auth failed' });
+            }
             let botInstance = controller.spawn({});
 
             let options = {
@@ -21,7 +24,6 @@ module.exports = (app, controller) => {
                 if (err) {
                     return res.send('auth failed');
                 }
-                let scopes = auth.scope.split(/\,/);
 
                 botInstance.api.auth.test({ token: auth.access_token }, (err, identity) => {
 
