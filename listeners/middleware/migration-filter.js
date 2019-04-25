@@ -5,13 +5,13 @@ const checkTeamMigration = async (teamId, controller) => {
         const team = await controller.storage.teams.get(teamId);
 
         if (!team) {
-            return true;
+            return false;
         }
 
         if (team.is_migrating) {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     } catch (err) {
         throw err;
     }
