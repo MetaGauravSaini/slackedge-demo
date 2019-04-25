@@ -22,20 +22,30 @@ let controller = Botkit.slackbot(botCfg);
 controller.startTicking();
 
 controller.middleware.receive.use(async (bot, message, next) => {
-    console.log('receive middleware called');
-    const isTeamMigrating = await checkTeamMigration(message.team_id);
 
-    if (!isTeamMigrating) {
-        next();
+    try {
+        console.log('receive middleware called');
+        const isTeamMigrating = await checkTeamMigration(message.team_id);
+    
+        if (!isTeamMigrating) {
+            next();
+        }
+    } catch (err) {
+        logger.log(err);
     }
 });
 
 controller.middleware.send.use(async (bot, message, next) => {
-    console.log('send middleware called');
-    const isTeamMigrating = await checkTeamMigration(message.team_id);
 
-    if (!isTeamMigrating) {
-        next();
+    try {
+        console.log('send middleware called');
+        const isTeamMigrating = await checkTeamMigration(message.team_id);
+    
+        if (!isTeamMigrating) {
+            next();
+        }
+    } catch (err) {
+        logger.log(err);
     }
 });
 
