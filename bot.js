@@ -26,7 +26,7 @@ controller.middleware.receive.use(async (bot, message, next) => {
 
     try {
         console.log('receive middleware called');
-        const isTeamMigrating = await checkTeamMigration(message.team_id);
+        const isTeamMigrating = await checkTeamMigration(message.team_id, controller);
     
         if (!isTeamMigrating) {
             next();
@@ -40,7 +40,7 @@ controller.middleware.send.use(async (bot, message, next) => {
 
     try {
         console.log('send middleware called');
-        const isTeamMigrating = await checkTeamMigration(message.team_id);
+        const isTeamMigrating = await checkTeamMigration(message.team_id, controller);
     
         if (!isTeamMigrating) {
             next();

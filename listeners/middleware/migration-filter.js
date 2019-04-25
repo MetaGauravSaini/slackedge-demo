@@ -1,14 +1,13 @@
-const controller = require('../../bot');
 
-const checkTeamMigration = async teamId => {
-    
+const checkTeamMigration = async (teamId, controller) => {
+
     try {
         const team = await controller.storage.teams.get(teamId);
-    
+
         if (!team) {
             return true;
         }
-    
+
         if (team.is_migrating) {
             return false;
         }
@@ -18,13 +17,15 @@ const checkTeamMigration = async teamId => {
     }
 }
 
-module.exports.filterMiddleware = async (patterns, message) => {
+module.exports.checkTeamMigration = checkTeamMigration;
+module.exports.getFilterMiddleware = controller => {
+    return async (patterns, message) => {
 
-    try {
-        const isTeamMigrating = await checkTeamMigration(message.team_id);
-        return isTeamMigrating;
-    } catch (err) {
-        throw err;
+        try {
+            const isTeamMigrating = await checkTeamMigration(message.team_id, controller);
+            return isTeamMigrating;
+        } catch (err) {
+            throw err;
+        }
     }
 }
-module.exports.checkTeamMigration = checkTeamMigration;
