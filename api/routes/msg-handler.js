@@ -1,5 +1,5 @@
 const logger = require('../../common/logger');
-const migrationFilter = require('../../util/check-grid-migration');
+const { checkTeamMigration } = require('../../listeners/middleware/migration-filter');
 
 module.exports = (app, controller) => {
 
@@ -13,7 +13,7 @@ module.exports = (app, controller) => {
             if (!req.body.userEmail && !req.body.channelId) {
                 return res.status(400).json({ ok: false, msg: 'either user email or channel id is required' });
             }
-            const isTeamMigrating = await migrationFilter(req.body.teamId, controller);
+            const isTeamMigrating = await checkTeamMigration(req.body.teamId, controller);
 
             if (!isTeamMigrating) {
                 // to get message, teamId, userEmail/channelId and orgId in req body
