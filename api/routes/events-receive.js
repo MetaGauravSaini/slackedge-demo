@@ -10,7 +10,8 @@ module.exports = (app, controller) => {
             if (!isTeamMigrating) {
                 next();
             } else {
-                res.sendStatus(200);
+                res.status(200);
+                res.end();
             }
         }
         next();
