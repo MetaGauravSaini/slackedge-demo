@@ -20,7 +20,7 @@ module.exports = (app, controller) => {
 
             if (req.query.code && req.query.state) {
                 let conn = await connFactory.connect(req.query.code, controller, req.query.state);
-                // saveTeamId(conn, req.query.state);
+                saveTeamId(conn, req.query.state);
                 res.status(302);
                 res.redirect('/auth-success.html');
             }

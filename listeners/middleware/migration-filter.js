@@ -1,3 +1,4 @@
+const logger = require('../../common/logger');
 
 const checkTeamMigration = async (teamId, controller) => {
 
@@ -13,13 +14,17 @@ const checkTeamMigration = async (teamId, controller) => {
         }
         return false;
     } catch (err) {
-        throw err;
+        logger.log(err);
     }
 }
 
 module.exports.checkTeamMigration = checkTeamMigration;
 module.exports.getFilterMiddleware = controller => {
     return async (bot, message, next) => {
+
+        if (message.event && message.event.type == 'app_uninstalled') {
+            next();
+        }
 
         try {
             const isTeamMigrating = await checkTeamMigration(message.team_id, controller);
@@ -28,7 +33,7 @@ module.exports.getFilterMiddleware = controller => {
                 next();
             }
         } catch (err) {
-            throw err;
+            logger.log(err);
         }
     }
 }

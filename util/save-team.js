@@ -1,7 +1,7 @@
 
 module.exports = controller => {
 
-    controller.on('oauth:success', auth => {
+    controller.on('oauth_success', auth => {
 
         controller.storage.teams.get(auth.identity.team_id, (err, team) => {
             let isNew = false;

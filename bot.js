@@ -7,7 +7,6 @@ const saveTeamUtil = require('./util/save-team');
 const eventListeners = require('./listeners/events');
 const basicListener = require('./listeners/basic-ears');
 const interactiveListener = require('./listeners/interactive');
-const logger = require('./common/logger');
 const { getFilterMiddleware } = require('./listeners/middleware/migration-filter');
 
 let botCfg = {
@@ -20,7 +19,6 @@ let botCfg = {
 
 let controller = Botkit.slackbot(botCfg);
 controller.startTicking();
-
 controller.middleware.receive.use(getFilterMiddleware(controller));
 
 saveTeamUtil(controller);

@@ -31,7 +31,8 @@ module.exports = (app, controller) => {
                         return res.send('auth failed');
                     }
                     auth.identity = identity;
-                    controller.trigger('oauth:success', [auth]);
+                    controller.trigger('oauth_success', [auth]);
+                    // controller.trigger('create_channel', [botInstance]);
                     res.redirect(auth.identity.url);
                 });
             });

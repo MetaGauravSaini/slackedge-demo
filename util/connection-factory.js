@@ -7,7 +7,7 @@ let openConnections = {};
 const oauth2 = new jsforce.OAuth2({
     clientId: process.env.SF_CLIENT_ID,
     clientSecret: process.env.SF_CLIENT_SECRET,
-    redirectUri: 'https://slackedge.herokuapp.com/sfauth/callback'
+    redirectUri: `${process.env.APP_BASE_URL}/sfauth/callback`
 });
 
 async function findOrgByTeamId(teamId, botController) {
