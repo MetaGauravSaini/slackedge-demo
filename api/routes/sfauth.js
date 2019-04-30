@@ -11,11 +11,8 @@ module.exports = (app, controller) => {
 
             if (req.query.error) {
                 logger.log('salesforce auth error:', req.query.error);
-                res.status(401).json({
-                    status: 400,
-                    ok: false,
-                    message: 'auth failed'
-                });
+                res.status(401);
+                res.redirect('/auth-failed.html');
             }
 
             if (req.query.code && req.query.state) {

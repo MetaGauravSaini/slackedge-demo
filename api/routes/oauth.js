@@ -22,13 +22,15 @@ module.exports = (app, controller) => {
             botInstance.api.oauth.access(options, (err, auth) => {
 
                 if (err) {
-                    return res.send('auth failed');
+                    res.status(401);
+                    return res.redirect('/auth-failed.html');
                 }
 
                 botInstance.api.auth.test({ token: auth.access_token }, (err, identity) => {
 
                     if (err) {
-                        return res.send('auth failed');
+                        res.status(401);
+                        return res.redirect('/auth-failed.html');
                     }
                     auth.identity = identity;
                     controller.trigger('oauth_success', [auth]);

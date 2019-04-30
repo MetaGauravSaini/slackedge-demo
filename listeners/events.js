@@ -39,7 +39,9 @@ module.exports = controller => {
     controller.on('app_uninstalled', async (ctrl, event) => {
 
         try {
+            console.log('event team id:', event.team_id);
             const existingConn = await connFactory.getConnection(event.team_id, controller);
+            console.log('old conn:', existingConn);
 
             if (existingConn) {
                 const revokeResult = await connFactory.revoke({

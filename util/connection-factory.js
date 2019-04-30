@@ -24,6 +24,7 @@ async function getExistingConnection(teamId, botController) {
 
     try {
         let orgs = await findOrgByTeamId(teamId, botController);
+        console.log('orgs from db:', orgs);
 
         if (orgs && orgs.length > 0) {
             let conn = new jsforce.Connection({
@@ -32,6 +33,7 @@ async function getExistingConnection(teamId, botController) {
                 refreshToken: orgs[0].refresh_token,
                 instanceUrl: orgs[0].instance_url
             });
+            console.log('conn from db:', conn);
 
             conn.on('refresh', (accessToken, res) => {
                 try {
@@ -75,8 +77,10 @@ module.exports = {
         return (authUrl + '&state=' + teamId);
     },
     getConnection: async (teamId, botController) => {
+        console.log('factory team id:', teamId);
 
         if (teamId in openConnections) {
+            console.log('team present in map');
             return openConnections[teamId];
         }
 
