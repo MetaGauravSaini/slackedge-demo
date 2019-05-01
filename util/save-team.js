@@ -1,4 +1,6 @@
 
+const logger = require('../common/logger');
+
 module.exports = controller => {
 
     controller.on('oauth_success', auth => {
@@ -28,17 +30,18 @@ module.exports = controller => {
             botInstance.api.auth.test({}, (err, botAuth) => {
 
                 if (err) {
-                    // error - bot auth failed
+                    logger.log('auth error:', err);
                 } else {
                     team.bot.name = botAuth.user;
                     botInstance.identity = botAuth;
                     botInstance.team_info = team;
 
-                    controller.storage.teams.save(team, (err, id) => {
+                    controller.storage.teams.save(team, (saveErr, id) => {
 
-                        if (err) {
-                            // error saving to db/file
+                        if (saveErr) {
+                            logger.log('team save error:', saveErr);
                         } else {
+                            controller.trigger('create_channel', [auth, botInstance]);
 
                             if (isNew) {
                                 controller.trigger('create_team', [botInstance, team]);

@@ -23,10 +23,10 @@ module.exports = {
             throw err;
         }
     },
-    saveTeamId: (conn, teamId) => {
+    saveTeamId: (conn, teamId, channelId) => {
         conn.apex.post(
             '/slackedge',
-            { teamId: teamId },
+            { teamId: teamId, channelId: channelId },
             (err, res) => {
 
                 if (err) {

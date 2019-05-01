@@ -23,22 +23,20 @@ async function findOrgByTeamId(teamId, botController) {
 async function getExistingConnection(teamId, botController) {
 
     try {
-        let orgs = await findOrgByTeamId(teamId, botController);
-        console.log('orgs from db:', orgs);
+        let connectedOrg = await findOrgByTeamId(teamId, botController);
 
-        if (orgs && orgs.length > 0) {
+        if (connectedOrg) {
             let conn = new jsforce.Connection({
                 oauth2: oauth2,
-                accessToken: orgs[0].access_token,
-                refreshToken: orgs[0].refresh_token,
-                instanceUrl: orgs[0].instance_url
+                accessToken: connectedOrg.access_token,
+                refreshToken: connectedOrg.refresh_token,
+                instanceUrl: connectedOrg.instance_url
             });
-            console.log('conn from db:', conn);
 
             conn.on('refresh', (accessToken, res) => {
                 try {
-                    orgs[0].access_token = accessToken;
-                    saveOrg(orgs[0], botController);
+                    connectedOrg.access_token = accessToken;
+                    saveOrg(connectedOrg, botController);
                 } catch (err) {
                     logger.log('connection refresh error:', err);
                 }
@@ -77,10 +75,8 @@ module.exports = {
         return (authUrl + '&state=' + teamId);
     },
     getConnection: async (teamId, botController) => {
-        console.log('factory team id:', teamId);
 
         if (teamId in openConnections) {
-            console.log('team present in map');
             return openConnections[teamId];
         }
 
