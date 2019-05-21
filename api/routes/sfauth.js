@@ -17,13 +17,8 @@ module.exports = (app, controller) => {
 
             if (req.query.code && req.query.state) {
                 let conn = await connFactory.connect(req.query.code, controller, req.query.state);
-                let channels = await controller.storage.channels.find({ team_id: req.query.state });
-
-                if (channels && channels.length > 0) {
-                    saveTeamId(conn, req.query.state, channels[0].id);
-                } else {
-                    saveTeamId(conn, req.query.state);
-                }
+                let teamData = { addTeam: req.query.state };
+                saveTeamId(conn, teamData);
                 res.status(302);
                 res.redirect('/auth-success.html');
             }

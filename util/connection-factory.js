@@ -100,6 +100,7 @@ module.exports = {
                 return conn;
             }
             conn = new jsforce.Connection({ oauth2: oauth2 });
+            const userInfo = await conn.authorize(authCode);
 
             conn.on('refresh', async (accessToken, res) => {
                 try {
@@ -113,8 +114,6 @@ module.exports = {
                     logger.log('connection refresh error:', err);
                 }
             });
-
-            const userInfo = await conn.authorize(authCode);
             let org = {
                 id: teamId,
                 access_token: conn.accessToken,

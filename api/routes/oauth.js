@@ -8,8 +8,12 @@ module.exports = (app, controller) => {
         authorize: (req, res) => {
             let code = req.query.code;
 
-            if (!req.query.state || process.env.STATE != req.query.state) {
-                // return res.status(401).json({ ok: false, message: 'auth failed' });
+            if (!req.query.state) {
+                return res.redirect('/auth-failed.html?error=missing_state_param');
+            }
+
+            if (process.env.STATE != req.query.state) {
+                return res.redirect('/auth-failed.html?error=invalid_state_param');
             }
             let botInstance = controller.spawn({});
 
@@ -34,7 +38,7 @@ module.exports = (app, controller) => {
                     }
                     auth.identity = identity;
                     controller.trigger('oauth_success', [auth]);
-                    res.redirect(auth.identity.url);
+                    res.redirect(`https://slack.com/app_redirect?app=${process.env.SLACK_APP_ID}`);
                 });
             });
         }
