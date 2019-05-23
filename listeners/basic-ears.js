@@ -62,6 +62,25 @@ module.exports = controller => {
                             }], {}, 'default');
                     });
                 }
+            } else if (message.text.includes('show accounts')) {
+                const accList = await refedgeUtil.getAccounts(message.team_id, controller);
+                let replyBody = {
+                    text: 'Found following accounts.',
+                    attachments: []
+                };
+
+                accList.records.forEach(acc => {
+                    replyBody.attachments.push({
+                        title: acc.Name,
+                        callback_id: acc.Id,
+                        attachment_type: 'default',
+                        actions: [
+                            { name: 'yes', text: 'Yes', value: 'yes', type: 'button' },
+                            { name: 'no', text: 'No', value: 'no', type: 'button' }
+                        ]
+                    });
+                });
+                bot.reply(message, replyBody);
             } else if (message.text.includes('help')) {
                 bot.reply(message, `I can connect you to a salesforce instance.
 Just type 'connect to a salesforce instance' to get started.
