@@ -1,6 +1,7 @@
 
 const connFactory = require('../util/connection-factory');
 const logger = require('../common/logger');
+const refedgeUtil = require('../util/refedge');
 
 module.exports = controller => {
 
