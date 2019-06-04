@@ -73,7 +73,7 @@ module.exports = controller => {
                 } else {
                     const accList = await refedgeUtil.getAccounts(message.team_id, controller);
                     let replyBody = {
-                        text: 'Found following accounts.',
+                        text: 'Here are the top 3 accounts.',
                         attachments: []
                     };
 
@@ -83,8 +83,7 @@ module.exports = controller => {
                             callback_id: acc.Id,
                             attachment_type: 'default',
                             actions: [
-                                { name: 'yes', text: 'Yes', value: 'yes', type: 'button' },
-                                { name: 'no', text: 'No', value: 'no', type: 'button' }
+                                { name: 'request', text: 'Request', value: 'yes', type: 'button' }
                             ]
                         });
                     });
