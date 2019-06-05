@@ -9,13 +9,6 @@ const basicListener = require('./listeners/basic-ears');
 const interactiveListener = require('./listeners/interactive');
 const { getFilterMiddleware } = require('./listeners/middleware/migration-filter');
 
-const watsonMiddleware = new WatsonMiddleware({
-    iam_apikey: process.env.WATSON_API_KEY,
-    url: process.env.WATSON_API_URL,
-    workspace_id: process.env.WATSON_WS_ID,
-    version: '2018-07-10',
-});
-
 let botCfg = {
     clientId: process.env.SLACK_CLIENT_ID,
     clientSecret: process.env.SLACK_CLIENT_SECRET,
@@ -27,6 +20,13 @@ let botCfg = {
 let controller = Botkit.slackbot(botCfg);
 controller.startTicking();
 controller.middleware.receive.use(getFilterMiddleware(controller));
+
+const watsonMiddleware = new WatsonMiddleware({
+    iam_apikey: process.env.WATSON_API_KEY,
+    url: process.env.WATSON_API_URL,
+    workspace_id: process.env.WATSON_WS_ID,
+    version: '2018-07-10',
+});
 controller.middleware.receive.use(watsonMiddleware.receive.bind(watsonMiddleware));
 
 eventListeners(controller);
