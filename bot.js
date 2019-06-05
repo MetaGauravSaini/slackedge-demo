@@ -27,7 +27,9 @@ const watsonMiddleware = new WatsonMiddleware({
     workspace_id: process.env.WATSON_WS_ID,
     version: '2018-07-10',
 });
-console.dir(watsonMiddleware);
+console.log(watsonMiddleware);
+console.log('...........');
+console.log(watsonMiddleware.receive);
 controller.middleware.receive.use(watsonMiddleware.receive.bind(watsonMiddleware));
 
 eventListeners(controller);

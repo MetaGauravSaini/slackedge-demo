@@ -5,7 +5,7 @@ const refedgeUtil = require('../util/refedge');
 
 module.exports = controller => {
 
-    controller.hears(['.*'], ['direct_message', 'direct_mention', 'mention'], async function (bot, message) {
+    controller.hears(['.*'], ['direct_message', 'direct_mention', 'mention'], async (bot, message) => {
         logger.log('err', message.watsonError, 'data', message.watsonData);
 
         if (message.watsonError) {
