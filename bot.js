@@ -1,4 +1,4 @@
-const Botkit = require('botkit');
+const { Botkit } = require('botkit');
 const { WatsonMiddleware } = require('botkit-middleware-watson');
 const { SlackAdapter } = require('botbuilder-adapter-slack');
 const mongoProvider = require('./db/mongo-provider')({
@@ -25,7 +25,8 @@ const adapter = new SlackAdapter({
 
 // let controller = Botkit.slackbot(botCfg);
 const controller = new Botkit({
-    adapter
+    adapter,
+    storage: mongoProvider
     // ...other options
 });
 controller.startTicking();
