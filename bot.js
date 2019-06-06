@@ -1,14 +1,14 @@
 const { Botkit } = require('botkit');
-const { WatsonMiddleware } = require('botkit-middleware-watson');
+import { WatsonMiddleware } from 'botkit-middleware-watson';
 const { SlackAdapter } = require('botbuilder-adapter-slack');
 const mongoProvider = require('./db/mongo-provider')({
     mongoUri: process.env.MONGO_CONNECTION_STRING
 });
 
-const eventListeners = require('./listeners/events');
-const basicListener = require('./listeners/basic-ears');
-const interactiveListener = require('./listeners/interactive');
-const { getFilterMiddleware } = require('./listeners/middleware/migration-filter');
+// const eventListeners = require('./listeners/events');
+// const basicListener = require('./listeners/basic-ears');
+// const interactiveListener = require('./listeners/interactive');
+// const { getFilterMiddleware } = require('./listeners/middleware/migration-filter');
 
 const adapter = new SlackAdapter({
     clientSigningSecret: process.env.SLACK_SIGNING_SECRET,
@@ -39,8 +39,19 @@ const watsonMiddleware = new WatsonMiddleware({
 });
 controller.middleware.receive.use(watsonMiddleware.receive.bind(watsonMiddleware));
 
-eventListeners(controller);
-basicListener(controller);
-interactiveListener(controller);
+controller.hears(['.*'], ['direct_message', 'direct_mention', 'mention'], async function (bot, message) {
+    console.log(message.watsonError);
+    console.log(message.watsonData);
+
+    if (message.watsonError) {
+        await bot.reply(message, "I'm sorry, but for technical reasons I can't respond to your message");
+    } else {
+        await bot.reply(message, message.watsonData.output.text.join('\n'));
+    }
+});
+
+// eventListeners(controller);
+// basicListener(controller);
+// interactiveListener(controller);
 
 module.exports = controller;
