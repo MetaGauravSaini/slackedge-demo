@@ -4,6 +4,7 @@ const { SlackAdapter } = require('botbuilder-adapter-slack');
 const mongoProvider = require('./db/mongo-provider')({
     mongoUri: process.env.MONGO_CONNECTION_STRING
 });
+const express = require('express');
 
 // const eventListeners = require('./listeners/events');
 // const basicListener = require('./listeners/basic-ears');
@@ -54,4 +55,11 @@ controller.hears(['.*'], ['direct_message', 'direct_mention', 'mention'], async 
 // basicListener(controller);
 // interactiveListener(controller);
 
-module.exports = controller;
+// module.exports = controller;
+
+const app = express();
+const port = process.env.PORT || 5000;
+app.set('port', port);
+app.listen(port, () => {
+    console.log('Client server listening on port ' + port);
+});
