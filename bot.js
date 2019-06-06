@@ -1,5 +1,4 @@
 const Botkit = require('botkit');
-const { WatsonMiddleware } = require('botkit-middleware-watson');
 const mongoProvider = require('./db/mongo-provider')({
     mongoUri: process.env.MONGO_CONNECTION_STRING
 });
@@ -20,14 +19,6 @@ let botCfg = {
 let controller = Botkit.slackbot(botCfg);
 controller.startTicking();
 controller.middleware.receive.use(getFilterMiddleware(controller));
-
-const watsonMiddleware = new WatsonMiddleware({
-    iam_apikey: process.env.WATSON_API_KEY,
-    url: process.env.WATSON_API_URL,
-    workspace_id: process.env.WATSON_WS_ID,
-    version: '2018-07-10',
-});
-controller.middleware.receive.use(watsonMiddleware.receive.bind(watsonMiddleware));
 
 eventListeners(controller);
 basicListener(controller);
