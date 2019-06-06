@@ -12,7 +12,7 @@ const { getFilterMiddleware } = require('./listeners/middleware/migration-filter
 
 const adapter = new SlackAdapter({
     clientSigningSecret: process.env.SLACK_SIGNING_SECRET,
-    botToken: 'xoxb-483103024786-507228297601-8erOocRM12S2uOwIknTxfFYv'
+    botToken: process.env.SLACK_BOT_TOKEN
 });
 
 /* let botCfg = {
