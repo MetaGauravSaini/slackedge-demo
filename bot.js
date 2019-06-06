@@ -29,8 +29,7 @@ const controller = new Botkit({
     storage: mongoProvider
     // ...other options
 });
-controller.startTicking();
-controller.middleware.receive.use(getFilterMiddleware(controller));
+// controller.middleware.receive.use(getFilterMiddleware(controller));
 
 const watsonMiddleware = new WatsonMiddleware({
     iam_apikey: process.env.WATSON_API_KEY,
