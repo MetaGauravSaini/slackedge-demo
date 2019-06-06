@@ -1,5 +1,5 @@
 const { Botkit } = require('botkit');
-import { WatsonMiddleware } from 'botkit-middleware-watson';
+const { WatsonMiddleware } = require('botkit-middleware-watson');
 const { SlackAdapter } = require('botbuilder-adapter-slack');
 const mongoProvider = require('./db/mongo-provider')({
     mongoUri: process.env.MONGO_CONNECTION_STRING
