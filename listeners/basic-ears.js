@@ -5,7 +5,7 @@ const refedgeUtil = require('../util/refedge');
 
 module.exports = controller => {
 
-    controller.hears(['.*'], ['direct_message', 'direct_mention', 'mention'], async function (bot, message) {
+    /* controller.hears(['.*'], ['direct_message', 'direct_mention', 'mention'], async function (bot, message) {
         logger.log('err', message.watsonError, 'data', message.watsonData);
 
         if (message.watsonError) {
@@ -13,9 +13,9 @@ module.exports = controller => {
         } else {
             await bot.reply(message, message.watsonData.output.text.join('\n'));
         }
-    });
+    }); */
 
-    /* controller.hears('', 'direct_message,direct_mention', async (bot, message) => {
+    controller.hears('', 'direct_message,direct_mention', async (bot, message) => {
 
         try {
             const supportUrl = `https://www.point-of-reference.com/contact/`;
@@ -109,5 +109,5 @@ Please visit the <${supportUrl}|Support Page> if you have any further questions.
         } catch (err) {
             logger.log(err);
         }
-    }); */
+    });
 }
