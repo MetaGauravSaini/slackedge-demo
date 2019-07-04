@@ -91,7 +91,7 @@ const adapter = new SlackAdapter({
 });
 const controller = new Botkit({
     adapter,
-    storage: mongoProvider
+    storage: new MemoryStorage()
     // ...other options
 });
 
