@@ -2,11 +2,11 @@ const Botkit = require('botkit');
 const mongoProvider = require('./db/mongo-provider')({
     mongoUri: process.env.MONGO_CONNECTION_STRING
 });
+const dialogflowMiddleware = require('botkit-middleware-dialogflow')({
+    keyFilename: './dialogflow-key.json',
+});
 
-const eventListeners = require('./listeners/events');
 const basicListener = require('./listeners/basic-ears');
-const interactiveListener = require('./listeners/interactive');
-const { getFilterMiddleware } = require('./listeners/middleware/migration-filter');
 
 let botCfg = {
     clientId: process.env.SLACK_CLIENT_ID,
@@ -17,11 +17,9 @@ let botCfg = {
 };
 
 let controller = Botkit.slackbot(botCfg);
+controller.middleware.receive.use(dialogflowMiddleware.receive);
 controller.startTicking();
-controller.middleware.receive.use(getFilterMiddleware(controller));
 
-eventListeners(controller);
 basicListener(controller);
-interactiveListener(controller);
 
 module.exports = controller;
