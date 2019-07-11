@@ -20,6 +20,15 @@ let controller = Botkit.slackbot(botCfg);
 controller.middleware.receive.use(dialogflowMiddleware.receive);
 controller.startTicking();
 
-basicListener(controller);
+controller.hears(
+    ['Default Welcome Intent'],
+    'direct_message',
+    dialogflowMiddleware.hears,
+    (bot, message) => {
+        console.log(message);
+        replyText = message.fulfillment.text;
+        bot.reply(message, replyText);
+    }
+);
 
 module.exports = controller;
