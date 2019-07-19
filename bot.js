@@ -3,7 +3,7 @@ const mongoProvider = require('./db/mongo-provider')({
     mongoUri: process.env.MONGO_CONNECTION_STRING
 });
 const dialogflowMiddleware = require('botkit-middleware-dialogflow')({
-    keyFilename: './dialogflow-key.json',
+    minimumConfidence: 0.5
 });
 
 const basicListener = require('./listeners/basic-ears');
@@ -28,6 +28,16 @@ controller.hears(
         console.log(message);
         replyText = message.fulfillment.text;
         bot.reply(message, replyText);
+    }
+);
+
+controller.hears(
+    ['create_nomination'],
+    'direct_message',
+    dialogflowMiddleware.hears,
+    (bot, message) => {
+        console.log(message);
+        bot.reply(message, 'create nomination intent detected');
     }
 );
 
