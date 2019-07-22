@@ -25,7 +25,13 @@ controller.hears(
     'direct_message',
     dialogflowMiddleware.hears,
     (bot, message) => {
-        console.log(message);
+        console.log(message.intent);
+        console.log(message.entities);
+        console.log(message.fulfillment);
+        console.log(message.confidence);
+        console.log(message.nlpResponse.queryResult.parameters);
+        console.log(message.nlpResponse.queryResult.outputContexts);
+        console.log(message.nlpResponse.queryResult.intent);
         replyText = message.fulfillment.text;
         bot.reply(message, replyText);
     }
@@ -36,7 +42,13 @@ controller.hears(
     'direct_message',
     dialogflowMiddleware.hears,
     (bot, message) => {
-        console.log(message);
+        console.log(message.intent);
+        console.log(message.entities);
+        console.log(message.fulfillment);
+        console.log(message.confidence);
+        console.log(message.nlpResponse.queryResult.parameters);
+        console.log(message.nlpResponse.queryResult.outputContexts);
+        console.log(message.nlpResponse.queryResult.intent);
         bot.reply(message, 'create nomination intent detected');
     }
 );
