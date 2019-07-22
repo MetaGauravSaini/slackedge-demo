@@ -20,12 +20,11 @@ let controller = Botkit.slackbot(botCfg);
 controller.middleware.receive.use(dialogflowMiddleware.receive);
 controller.startTicking();
 
-controller.hears('', 'direct_message,direct_mention', dialogflowMiddleware.hears, (bot, message) => {
+controller.hears('create_nomination', 'direct_message,direct_mention', dialogflowMiddleware.hears, (bot, message) => {
     console.log(message.intent);
+    console.log(message.entities);
     console.log(message.fulfillment);
     console.log(message.confidence);
-    console.log(message.nlpResponse.queryResult.parameters);
-    console.log(message.nlpResponse.queryResult.outputContexts);
     bot.reply(message, 'hello');
 });
 
