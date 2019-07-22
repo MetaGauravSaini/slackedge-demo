@@ -20,37 +20,13 @@ let controller = Botkit.slackbot(botCfg);
 controller.middleware.receive.use(dialogflowMiddleware.receive);
 controller.startTicking();
 
-controller.hears(
-    ['Default Welcome Intent'],
-    'direct_message',
-    dialogflowMiddleware.hears,
-    (bot, message) => {
-        console.log(message.intent);
-        console.log(message.entities);
-        console.log(message.fulfillment);
-        console.log(message.confidence);
-        console.log(message.nlpResponse.queryResult.parameters);
-        console.log(message.nlpResponse.queryResult.outputContexts);
-        console.log(message.nlpResponse.queryResult.intent);
-        replyText = message.fulfillment.text;
-        bot.reply(message, replyText);
-    }
-);
-
-controller.hears(
-    ['create_nomination'],
-    'direct_message',
-    dialogflowMiddleware.hears,
-    (bot, message) => {
-        console.log(message.intent);
-        console.log(message.entities);
-        console.log(message.fulfillment);
-        console.log(message.confidence);
-        console.log(message.nlpResponse.queryResult.parameters);
-        console.log(message.nlpResponse.queryResult.outputContexts);
-        console.log(message.nlpResponse.queryResult.intent);
-        bot.reply(message, 'create nomination intent detected');
-    }
-);
+controller.hears('', 'direct_message,direct_mention', dialogflowMiddleware.hears, (bot, message) => {
+    console.log(message.intent);
+    console.log(message.fulfillment);
+    console.log(message.confidence);
+    console.log(message.nlpResponse.queryResult.parameters);
+    console.log(message.nlpResponse.queryResult.outputContexts);
+    bot.reply(message, 'hello');
+});
 
 module.exports = controller;
