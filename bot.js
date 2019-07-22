@@ -21,7 +21,15 @@ controller.middleware.receive.use(dialogflowMiddleware.receive);
 controller.startTicking();
 
 controller.hears('create_nomination', 'direct_message,direct_mention', dialogflowMiddleware.hears, (bot, message) => {
-    bot.reply(message, 'nomination intent detected');
+    bot.reply(message, message.fulfillment.text);
+    // console.log(message.intent);
+    // console.log(message.entities);
+    // console.log(message.fulfillment);
+    // console.log(message.confidence);
+});
+
+controller.hears('hi', 'direct_message,direct_mention', (bot, message) => {
+    bot.reply(message, 'hello');
     // console.log(message.intent);
     // console.log(message.entities);
     // console.log(message.fulfillment);
