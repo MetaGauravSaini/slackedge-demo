@@ -17,7 +17,7 @@ let botCfg = {
 };
 
 let controller = Botkit.slackbot(botCfg);
-controller.middleware.receive.use(dialogflowMiddleware.receive);
+// controller.middleware.receive.use(dialogflowMiddleware.receive);
 controller.startTicking();
 
 controller.hears('', 'direct_message,direct_mention', (bot, message) => {
