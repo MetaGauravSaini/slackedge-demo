@@ -19,7 +19,6 @@ let botCfg = {
 let controller = Botkit.slackbot(botCfg);
 controller.startTicking();
 controller.middleware.receive.use(getFilterMiddleware(controller));
-controller.middleware.receive.use(dialogflowMiddleware.receive);
 
 eventListeners(controller);
 basicListener(controller);
