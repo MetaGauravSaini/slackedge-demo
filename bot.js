@@ -2,11 +2,10 @@ const Botkit = require('botkit');
 const mongoProvider = require('./db/mongo-provider')({
     mongoUri: process.env.MONGO_CONNECTION_STRING
 });
-const dialogflowMiddleware = require('botkit-middleware-dialogflow')({});
 
-// const eventListeners = require('./listeners/events');
-// const basicListener = require('./listeners/basic-ears');
-// const interactiveListener = require('./listeners/interactive');
+const eventListeners = require('./listeners/events');
+const basicListener = require('./listeners/basic-ears');
+const interactiveListener = require('./listeners/interactive');
 const { getFilterMiddleware } = require('./listeners/middleware/migration-filter');
 
 let botCfg = {
@@ -22,21 +21,8 @@ controller.startTicking();
 controller.middleware.receive.use(getFilterMiddleware(controller));
 controller.middleware.receive.use(dialogflowMiddleware.receive);
 
-// eventListeners(controller);
-// basicListener(controller);
-// interactiveListener(controller);
-
-controller.hears(
-    'create_nomination',
-    'direct_message,direct_mention',
-    dialogflowMiddleware.hears,
-    (bot, message) => {
-        bot.reply(message, message.fulfillment.text);
-        console.log(message.intent);
-        console.log(message.entities);
-        console.log(message.fulfillment);
-        console.log(message.confidence);
-    }
-);
+eventListeners(controller);
+basicListener(controller);
+interactiveListener(controller);
 
 module.exports = controller;
