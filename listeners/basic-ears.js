@@ -1,19 +1,8 @@
-
 const connFactory = require('../util/connection-factory');
 const logger = require('../common/logger');
 const refedgeUtil = require('../util/refedge');
 
 module.exports = controller => {
-
-    /* controller.hears(['.*'], ['direct_message', 'direct_mention', 'mention'], async function (bot, message) {
-        logger.log('err', message.watsonError, 'data', message.watsonData);
-
-        if (message.watsonError) {
-            await bot.reply(message, `I'm sorry, but for technical reasons I can't respond to your message`);
-        } else {
-            await bot.reply(message, message.watsonData.output.text.join('\n'));
-        }
-    }); */
 
     controller.hears('', 'direct_message,direct_mention', async (bot, message) => {
 
