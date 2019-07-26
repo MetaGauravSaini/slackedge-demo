@@ -2,11 +2,7 @@ require('dotenv').config();
 
 const { Botkit } = require('botkit');
 const { SlackAdapter, SlackMessageTypeMiddleware, SlackEventMiddleware } = require('botbuilder-adapter-slack');
-
-// const eventListeners = require('./listeners/events');
-// const basicListener = require('./listeners/basic-ears');
-// const interactiveListener = require('./listeners/interactive');
-// const { getFilterMiddleware } = require('./listeners/middleware/migration-filter');
+const dialogflowMiddleware = require('./df-middleware');
 
 const adapter = new SlackAdapter({
     clientSigningSecret: process.env.SLACK_SIGNING_SECRET,
@@ -25,29 +21,23 @@ const controller = new Botkit({
     adapter
 });
 
+controller.middleware.receive.use(dialogflowMiddleware.receive);
+
 controller.ready(() => {
     controller.loadModules(__dirname + '/features');
 });
 
 controller.webserver.get('/login', (req, res) => {
-    // getInstallLink points to slack's oauth endpoint and includes clientId and scopes
     res.redirect(controller.adapter.getInstallLink());
 });
 
 controller.webserver.get('/oauth', async (req, res) => {
     try {
         const results = await controller.adapter.validateOauthCode(req.query.code);
-
         console.log('FULL OAUTH DETAILS', results);
-
-        // Store token by team in bot state.
         tokenCache[results.team_id] = results.bot.bot_access_token;
-
-        // Capture team to bot id
         userCache[results.team_id] =  results.bot.bot_user_id;
-
         res.json('Success! Bot installed.');
-
     } catch (err) {
         console.error('OAUTH ERROR:', err);
         res.status(401);
@@ -89,14 +79,3 @@ async function getBotUserByTeam(teamId) {
         console.error('Team not found in userCache: ', teamId);
     }
 }
-
-
-// let controller = Botkit.slackbot(botCfg);
-// controller.startTicking();
-// controller.middleware.receive.use(getFilterMiddleware(controller));
-
-// eventListeners(controller);
-// basicListener(controller);
-// interactiveListener(controller);
-
-module.exports = controller;
