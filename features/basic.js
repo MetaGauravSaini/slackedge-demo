@@ -2,26 +2,23 @@ const dialogflowMiddleware = require('../df-middleware');
 
 module.exports = function(controller) {
 
-    // use a regular expression to match the text of the message
     controller.hears(
-        new RegExp(/^\d+$/),
+        ['can you nominate an account?'],
         ['message', 'direct_message'],
         dialogflowMiddleware.hears,
         async (bot, message) => {
             console.log('df response----');
             console.log(message.intent, message.entities, message.fulfillment);
-            await bot.reply(message, { text: 'I heard a number using a regular expression.' });
+            await bot.reply(message,{ text: 'I HEARD ALL CAPS!' });
         }
     );
 
-    // match any one of set of mixed patterns like a string, a regular expression
-    controller.hears(
-        ['allcaps', new RegExp(/^[A-Z\s]+$/)],
-        ['message', 'direct_message'],
+    controller.on(
+        'direct_message',
         async (bot, message) => {
             console.log('df response----');
             console.log(message.intent, message.entities, message.fulfillment);
-            await bot.reply(message,{ text: 'I HEARD ALL CAPS!' });
+            await bot.reply(message, 'I heard a private message');
         }
     );
 
