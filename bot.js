@@ -4,7 +4,9 @@ const { Botkit } = require('botkit');
 const { SlackAdapter, SlackMessageTypeMiddleware, SlackEventMiddleware } = require('botbuilder-adapter-slack');
 
 const dialogflowMiddleware = require('./df-middleware');
-const mongoProvider = require('./db/mongo-provider');
+const mongoProvider = require('./db/mongo-provider')({
+    mongoUri: process.env.MONGO_CONNECTION_STRING
+});
 
 const adapter = new SlackAdapter({
     clientSigningSecret: process.env.SLACK_SIGNING_SECRET,
