@@ -1,3 +1,1 @@
-const dialogflowMiddleware = require('botkit-middleware-dialogflow')();
-
-module.exports = dialogflowMiddleware;
+module.exports = require('botkit-middleware-dialogflow')();
