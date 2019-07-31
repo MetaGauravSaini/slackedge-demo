@@ -1,8 +1,10 @@
 require('dotenv').config();
 
+const path = require('path');
 const { Botkit } = require('botkit');
 const { SlackAdapter, SlackMessageTypeMiddleware, SlackEventMiddleware } = require('botbuilder-adapter-slack');
 
+const { getFilterMiddleware } = require('./listeners/middleware/migration-filter');
 const dialogflowMiddleware = require('./df-middleware');
 const mongoProvider = require('./db/mongo-provider')({
     mongoUri: process.env.MONGO_CONNECTION_STRING
@@ -22,26 +24,35 @@ adapter.use(new SlackMessageTypeMiddleware());
 
 const controller = new Botkit({
     webhook_uri: '/slack/receive',
-    adapter
+    adapter,
+    webserver_middlewares: []
 });
+
+// controller.publicFolder('public', path.join(__dirname, 'public'));
 
 controller.addPluginExtension('database', mongoProvider);
 
 controller.middleware.receive.use(dialogflowMiddleware.receive);
+controller.middleware.receive.use(getFilterMiddleware(controller));
 
 controller.ready(() => {
-    controller.loadModules(__dirname + '/features');
+    controller.loadModules(__dirname + '/listeners');
 });
 
 controller.webserver.get('/login', (req, res) => {
     res.redirect(controller.adapter.getInstallLink());
 });
 
+controller.webserver.get('/test', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 controller.webserver.get('/oauth', async (req, res) => {
 
     try {
         const results = await controller.adapter.validateOauthCode(req.query.code);
-        console.log('FULL OAUTH DETAILS', results);
+        tokenCache[results.team_id] = results.bot.bot_access_token;
+        userCache[results.team_id] =  results.bot.bot_user_id;
         let newTeam = {
             id: results.team_id,
             bot_access_token: results.bot.bot_access_token,
@@ -49,8 +60,6 @@ controller.webserver.get('/oauth', async (req, res) => {
         };
 
         controller.plugins.database.teams.save(newTeam, (err, user) => {
-            tokenCache[results.team_id] = results.bot.bot_access_token;
-            userCache[results.team_id] =  results.bot.bot_user_id;
             res.json('Success! Bot installed.');
         });
     } catch (err) {
@@ -96,3 +105,8 @@ async function getBotUserByTeam(teamId) {
         console.error('Team not found in userCache: ', teamId);
     }
 }
+
+process.on('uncaughtException', err => {
+    logger.log('uncaught exception encountered, exiting process', err.stack);
+    process.exit(1);
+});

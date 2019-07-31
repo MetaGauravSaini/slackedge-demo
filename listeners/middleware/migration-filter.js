@@ -3,7 +3,7 @@ const logger = require('../../common/logger');
 const checkTeamMigration = async (teamId, controller) => {
 
     try {
-        const team = await controller.storage.teams.get(teamId);
+        const team = await controller.plugins.database.teams.get(teamId);
 
         if (!team) {
             return false;
@@ -21,6 +21,7 @@ const checkTeamMigration = async (teamId, controller) => {
 module.exports.checkTeamMigration = checkTeamMigration;
 module.exports.getFilterMiddleware = controller => {
     return async (bot, message, next) => {
+        console.log('migration filter middleware called...');
 
         if (message.event && message.event.type == 'app_uninstalled') {
             next();
