@@ -24,10 +24,10 @@ module.exports = controller => {
                 }
             };
 
-            controller.plugins.database.teams.save(newTeam, (err, team) => {
-                controller.trigger('oauth_success', [newTeam]);
-                res.redirect(`https://slack.com/app_redirect?app=${process.env.SLACK_APP_ID}`);
-            });
+            const saveResult = await controller.plugins.database.teams.save(newTeam);
+            console.log(saveResult);
+            controller.trigger('oauth_success', [newTeam]);
+            res.redirect(`https://slack.com/app_redirect?app=${process.env.SLACK_APP_ID}`);
         } catch (err) {
             console.error('OAUTH ERROR: ', err);
             res.status(401);
