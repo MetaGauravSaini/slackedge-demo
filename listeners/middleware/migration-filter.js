@@ -21,11 +21,12 @@ const checkTeamMigration = async (teamId, controller) => {
 module.exports.checkTeamMigration = checkTeamMigration;
 module.exports.getFilterMiddleware = controller => {
     return async (bot, message, next) => {
-        console.log('migration filter middleware called...');
-
+        console.log('migration filter middleware called...', message);
+        
         if (message.event && message.event.type == 'app_uninstalled') {
             next();
         }
+        console.log('inside migration filter middleware...');
 
         try {
             const isTeamMigrating = await checkTeamMigration(message.team_id, controller);

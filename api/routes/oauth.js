@@ -2,6 +2,18 @@
 module.exports = controller => {
 
     /* controller.webserver.get('/test', async (req, res) => {
+
+        try {
+            const teamData = await controller.plugins.database.teams.get('TE7310QP4');
+            console.log('teams ', teamData);
+            const channelData = await controller.plugins.database.channels.all();
+            console.log('channels ', channelData);
+            const orgData = await controller.plugins.database.orgs.find({ id: 'test' });
+            console.log('orgs ', orgData);
+        } catch (err) {
+            console.log(err);
+        }
+
         res.send({ ok: true });
     }); */
 

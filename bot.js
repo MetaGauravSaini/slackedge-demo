@@ -47,14 +47,13 @@ async function getTokenForTeam(teamId) {
 
     try {
         const teamData = await controller.plugins.database.teams.get(teamId);
+
+        if (!teamData) {
+            console.log('team not found for id: ', teamId);
+        }
         return teamData.bot.token;
     } catch (err) {
-
-        if (err.name === 'TypeError') {
-            console.log('team not found: ', teamId);
-        } else {
-            console.log('error fetching team: ', err);
-        }
+        console.log(err);
     }
 }
 
@@ -62,14 +61,13 @@ async function getBotUserByTeam(teamId) {
 
     try {
         const teamData = await controller.plugins.database.teams.get(teamId);
+
+        if (!teamData) {
+            console.log('team not found for id: ', teamId);
+        }
         return teamData.bot.user_id;
     } catch (err) {
-
-        if (err.name === 'TypeError') {
-            console.log('team not found: ', teamId);
-        } else {
-            console.log('error fetching team: ', err);
-        }
+        console.log(err);
     }
 }
 

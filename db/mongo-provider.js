@@ -14,11 +14,11 @@ module.exports = config => {
     mongoose.set('useFindAndModify', false);
     let db = config.db || mongoose.createConnection(config.mongoUri);
     let storage = {};
-    let tables = ['teams', 'channels', 'users', 'orgs'];
+    let tables = ['teams', 'channels', 'orgs'];
 
     tables.forEach(tab => {
         let model = createModel(db, tab);
-        storage[tab] = setupStorage(model);
+        storage[tab] = setupStorage(model, tab);
     });
     return storage;
 };
@@ -41,12 +41,17 @@ function createModel(db, table) {
     }
 }
 
-function setupStorage(table) {
+function setupStorage(tableModel, tabelName) {
     return {
         get: async (id) => {
 
             try {
-                const result = await table.findOne({ id: id });
+                const result = await tableModel.findOne({ id: id });
+
+                if (!result) {
+                    return null;
+                    //throw new Error(`${tabelName} not found for id ${id}`);
+                }
                 return result._doc;
             } catch (err) {
                 throw err;
@@ -55,7 +60,7 @@ function setupStorage(table) {
         save: async (data) => {
 
             try {
-                await table.findOneAndUpdate(
+                await tableModel.findOneAndUpdate(
                     { id: data.id },
                     data,
                     { upsert: true, new: true });
@@ -67,7 +72,7 @@ function setupStorage(table) {
         all: async () => {
 
             try {
-                const result = await table.find({});
+                const result = await tableModel.find({});
                 return result.map(d => d._doc);
             } catch (err) {
                 throw err;
@@ -76,7 +81,7 @@ function setupStorage(table) {
         delete: async (id) => {
 
             try {
-                await table.deleteOne({ id: id });
+                await tableModel.deleteOne({ id: id });
                 return 'success';
             } catch (err) {
                 throw err;
@@ -85,7 +90,7 @@ function setupStorage(table) {
         find: async (data, options) => {
 
             try {
-                const result = await table.find(data, null, options);
+                const result = await tableModel.find(data, null, options);
                 return result.map(d => d._doc);
             } catch (err) {
                 throw err;
