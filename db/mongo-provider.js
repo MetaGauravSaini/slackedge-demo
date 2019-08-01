@@ -43,24 +43,53 @@ function createModel(db, table) {
 
 function setupStorage(table) {
     return {
-        get: (id, cb) => {
-            return table.findOne({ id: id }).lean().exec(cb);
+        get: async (id) => {
+
+            try {
+                const result = await table.findOne({ id: id });
+                return result._doc;
+            } catch (err) {
+                throw err;
+            }
         },
-        save: (data, cb) => {
-            return table
-                .findOneAndUpdate({ id: data.id }, data, {
-                    upsert: true,
-                    new: true
-                }).lean().exec(cb);
+        save: async (data) => {
+
+            try {
+                await table.findOneAndUpdate(
+                    { id: data.id },
+                    data,
+                    { upsert: true, new: true });
+                return 'success';
+            } catch (err) {
+                throw err;
+            }
         },
-        all: cb => {
-            return table.find({}).lean().exec(cb);
+        all: async () => {
+
+            try {
+                const result = await table.find({});
+                return result.map(d => d._doc);
+            } catch (err) {
+                throw err;
+            }
         },
-        delete: (id, cb) => {
-            return table.deleteOne({ id: id }).lean().exec(cb);
+        delete: async (id) => {
+
+            try {
+                await table.deleteOne({ id: id });
+                return 'success';
+            } catch (err) {
+                throw err;
+            }
         },
-        find: (data, cb, options) => {
-            return table.find(data, null, options).lean().exec(cb);
+        find: async (data, options) => {
+
+            try {
+                const result = await table.find(data, null, options);
+                return result.map(d => d._doc);
+            } catch (err) {
+                throw err;
+            }
         }
     };
 }

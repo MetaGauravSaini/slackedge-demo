@@ -1,49 +1,37 @@
 
-module.exports = (app, controller) => {
+module.exports = controller => {
 
-    let authHandler = {
-        login: (req, res) => {
-            res.redirect(controller.getAuthorizeURL());
-        },
-        authorize: (req, res) => {
-            let code = req.query.code;
+    /* controller.webserver.get('/test', async (req, res) => {
+        res.send({ ok: true });
+    }); */
 
-            /* if (!req.query.state) {
-                return res.redirect('/auth-failed.html?error=missing_state_param');
-            }
+    controller.webserver.get('/login', (req, res) => {
+        res.redirect(controller.adapter.getInstallLink());
+    });
 
-            if (process.env.STATE != req.query.state) {
-                return res.redirect('/auth-failed.html?error=invalid_state_param');
-            } */
-            let botInstance = controller.spawn({});
+    controller.webserver.get('/oauth', async (req, res) => {
 
-            let options = {
-                client_id: controller.config.clientId,
-                client_secret: controller.config.clientSecret,
-                code: code
+        try {
+            const authData = await controller.adapter.validateOauthCode(req.query.code);
+            let newTeam = {
+                id: authData.team_id,
+                name: authData.team_name,
+                is_migrating: false,
+                bot: {
+                    token: authData.bot.bot_access_token,
+                    user_id: authData.bot.bot_user_id,
+                    app_token: authData.access_token
+                }
             };
 
-            botInstance.api.oauth.access(options, (err, auth) => {
-
-                if (err) {
-                    res.status(401);
-                    return res.redirect('/auth-failed.html');
-                }
-
-                botInstance.api.auth.test({ token: auth.access_token }, (err, identity) => {
-
-                    if (err) {
-                        res.status(401);
-                        return res.redirect('/auth-failed.html');
-                    }
-                    auth.identity = identity;
-                    controller.trigger('oauth_success', [auth]);
-                    res.redirect(`https://slack.com/app_redirect?app=${process.env.SLACK_APP_ID}`);
-                });
+            controller.plugins.database.teams.save(newTeam, (err, team) => {
+                controller.trigger('oauth_success', [newTeam]);
+                res.redirect(`https://slack.com/app_redirect?app=${process.env.SLACK_APP_ID}`);
             });
+        } catch (err) {
+            console.error('OAUTH ERROR: ', err);
+            res.status(401);
+            res.send(err.message);
         }
-    };
-    app.get('/login', authHandler.login);
-    app.get('/oauth', authHandler.authorize);
-    return authHandler;
+    });
 }

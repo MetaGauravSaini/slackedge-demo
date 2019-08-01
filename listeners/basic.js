@@ -10,4 +10,12 @@ module.exports = function(controller) {
         }
     );
 
+    controller.on('test_ev', data => {
+        console.log(data);
+    });
+
+    controller.on('oauth_success', data => {
+        console.log(data);
+    });
+
 }
