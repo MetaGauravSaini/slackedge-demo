@@ -14,10 +14,6 @@ module.exports = function(controller) {
         }
     );
 
-    controller.on('oauth_success', data => {
-        console.log(data);
-    });
-
     controller.on('oauth_success', async authData => {
 
         try {
@@ -58,9 +54,9 @@ module.exports = function(controller) {
     controller.on('create_channel', async (bot, accessToken, teamId) => {
 
         try {
-            let result = await bot.api.channels.create({
+            let result = await bot.api.channels.join({
                 token: accessToken,
-                name: 'crp_team'
+                name: '#crp_team'
             });
             const crpTeamChannel = {
                 id: result.channel.id,
