@@ -1,4 +1,4 @@
-const logger = require('../../common/logger');
+// const logger = require('../../common/logger');
 const { checkTeamMigration } = require('../../listeners/middleware/migration-filter');
 
 module.exports = (app, controller) => {
@@ -14,7 +14,7 @@ module.exports = (app, controller) => {
             controller.trigger('post-message', [req.body]);
             return res.status(200).json({ ok: true, msg: 'message posted to slack' });
         } catch (err) {
-            logger.log(err);
+            console.log(err);
         }
     });
 }

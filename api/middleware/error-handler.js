@@ -1,5 +1,5 @@
 
-const logger = require('../../common/logger');
+// const logger = require('../../common/logger');
 
 module.exports = {
     notFound: (req, res, next) => {
@@ -13,7 +13,7 @@ module.exports = {
         if (error.status === 404) {
             res.redirect('/not-found.html');
         } else {
-            logger.log(error.message, error.stack);
+            console.log(error.message, error.stack);
             res.redirect('/internal-error.html');
         }
     }

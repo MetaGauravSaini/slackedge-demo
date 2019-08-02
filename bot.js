@@ -68,6 +68,6 @@ async function getBotUserByTeam(teamId) {
 }
 
 process.on('uncaughtException', err => {
-    logger.log('uncaught exception encountered, exiting process', err.stack);
+    console.log('uncaught exception encountered, exiting process', err.stack);
     process.exit(1);
 });

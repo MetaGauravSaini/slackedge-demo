@@ -1,7 +1,7 @@
 
 const connFactory = require('../../util/connection-factory');
 const { saveTeamId } = require('../../util/refedge');
-const logger = require('../../common/logger');
+// const logger = require('../../common/logger');
 
 module.exports = (app, controller) => {
 
@@ -10,7 +10,7 @@ module.exports = (app, controller) => {
         try {
 
             if (req.query.error) {
-                logger.log('salesforce auth error:', req.query.error);
+                console.log('salesforce auth error:', req.query.error);
                 res.status(401);
                 res.redirect('/auth-failed.html');
             }
@@ -23,7 +23,7 @@ module.exports = (app, controller) => {
                 res.redirect('/auth-success.html');
             }
         } catch (err) {
-            logger.log('salesforce auth error:', err);
+            console.log('salesforce auth error:', err);
         }
     });
 }
