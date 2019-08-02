@@ -62,12 +62,12 @@ module.exports = function(controller) {
         });
     });
 
-    controller.on('create_channel', async (bot, accessToken) => {
+    controller.on('create_channel', (bot, accessToken) => {
 
         bot.api.channels.create({
             token: accessToken,
             name: 'crp_team'
-        }, (err, result) => {
+        }, async (err, result) => {
 
             if (err) {
                 return console.log('channel create error:', err);
