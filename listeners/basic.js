@@ -50,7 +50,7 @@ module.exports = function(controller) {
         }
     });
 
-    controller.on('onboard', (bot, userId) => {
+    controller.on('onboard', async (bot, userId) => {
         await bot.startPrivateConversation(userId);
         await bot.say('Hello, I\'m REbot.');
     });
