@@ -52,6 +52,7 @@ module.exports = function(controller) {
     });
 
     controller.on('create_channel', async (bot, accessToken, teamId) => {
+        console.log('------------>', accessToken, teamId);
 
         try {
             let result = await bot.api.channels.join({
