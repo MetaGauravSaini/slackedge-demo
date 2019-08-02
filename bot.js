@@ -37,10 +37,6 @@ controller.ready(() => {
     controller.loadModules(__dirname + '/listeners');
 });
 
-controller.on('oauth_success', newTeam => {
-    console.log(newTeam);
-});
-
 authRouter(controller);
 
 async function getTokenForTeam(teamId) {
