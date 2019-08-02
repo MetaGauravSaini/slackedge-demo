@@ -38,7 +38,7 @@ module.exports = function(controller) {
 
             if (isNew) {
                 let bot = await controller.spawn(authData.team_id);
-                controller.trigger('create_channel', bot, authData.access_token, authData.team_id);
+                controller.trigger('create_channel', bot, authData);
                 controller.trigger('onboard', bot, authData.user_id);
             }
         } catch (err) {
@@ -51,18 +51,18 @@ module.exports = function(controller) {
         await bot.say('Hello, I\'m REbot.');
     });
 
-    controller.on('create_channel', async (bot, accessToken, teamId) => {
-        console.log('------------>', accessToken, teamId);
+    controller.on('create_channel', async (bot, authData) => {
+        console.log('------------>', authData);
 
         try {
             let result = await bot.api.channels.join({
-                token: accessToken,
+                token: authData.access_token,
                 name: '#crp_team'
             });
             const crpTeamChannel = {
                 id: result.channel.id,
                 name: result.channel.name,
-                team_id: teamId
+                team_id: authData.team_id
             };
             await controller.plugins.database.channels.save(crpTeamChannel);
         } catch (err) {
