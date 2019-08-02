@@ -42,7 +42,7 @@ module.exports = function(controller) {
 
             if (isNew) {
                 let bot = await controller.spawn(authData.team_id);
-                controller.trigger('create_channel', bot, authData.access_token);
+                controller.trigger('create_channel', bot, authData.access_token, authData.team_id);
                 controller.trigger('onboard', bot, authData.user_id);
             }
         } catch (err) {
@@ -51,39 +51,26 @@ module.exports = function(controller) {
     });
 
     controller.on('onboard', (bot, userId) => {
-
-        bot.startPrivateConversation({ user: userId }, (err, convo) => {
-
-            if (err) {
-                console.log(err);
-            } else {
-                convo.say('Hello, I\'m REbot.');
-            }
-        });
+        await bot.startPrivateConversation(userId);
+        await bot.say('Hello, I\'m REbot.');
     });
 
-    controller.on('create_channel', (bot, accessToken) => {
+    controller.on('create_channel', async (bot, accessToken, teamId) => {
 
-        bot.api.channels.create({
-            token: accessToken,
-            name: 'crp_team'
-        }, async (err, result) => {
-
-            if (err) {
-                return console.log('channel create error:', err);
-            }
+        try {
+            let result = await bot.api.channels.create({
+                token: accessToken,
+                name: 'crp_team'
+            });
             const crpTeamChannel = {
                 id: result.channel.id,
                 name: result.channel.name,
-                team_id: auth.identity.team_id
+                team_id: teamId
             };
-
-            try {
-                await controller.plugins.database.channels.save(crpTeamChannel);
-            } catch (err) {
-                console.log('error saving channel to db: ', err);
-            }
-        });
+            await controller.plugins.database.channels.save(crpTeamChannel);
+        } catch (err) {
+            console.log('error setting up crp_team channel:', err);
+        }
     });
 
 }
