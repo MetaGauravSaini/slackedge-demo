@@ -8,7 +8,7 @@ const dialogflowMiddleware = require('./df-middleware');
 const mongoProvider = require('./db/mongo-provider')({
     mongoUri: process.env.MONGO_CONNECTION_STRING
 });
-const authRouter = require('./api/routes/oauth');
+const authRouter = require('./routes/oauth');
 
 const adapter = new SlackAdapter({
     clientSigningSecret: process.env.SLACK_SIGNING_SECRET,

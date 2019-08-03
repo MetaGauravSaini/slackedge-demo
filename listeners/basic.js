@@ -52,7 +52,6 @@ module.exports = function(controller) {
     });
 
     controller.on('create_channel', async (bot, authData) => {
-        console.log('------------>', authData);
 
         try {
             let result = await bot.api.channels.join({
@@ -67,6 +66,62 @@ module.exports = function(controller) {
             await controller.plugins.database.channels.save(crpTeamChannel);
         } catch (err) {
             console.log('error setting up crp_team channel:', err);
+        }
+    });
+
+    controller.on('app_uninstalled', async (ctrl, event) => {
+
+        try {
+            // const existingConn = await connFactory.getConnection(event.team_id, controller);
+            const channels = await controller.plugins.database.channels.find({ team_id: event.team_id });
+
+            if (channels && channels.length > 0) {
+                await controller.plugins.database.channels.delete(channels[0].id);
+            }
+
+            // add org delete code
+
+            /* if (existingConn) {
+                let teamData = { removeTeam: event.team_id };
+                saveTeamId(existingConn, teamData);
+                const revokeResult = await connFactory.revoke({
+                    revokeUrl: existingConn.oauth2.revokeServiceUrl,
+                    refreshToken: existingConn.refreshToken,
+                    teamId: event.team_id
+                }, controller);
+                console.log('delete org result:', revokeResult);
+            } */
+            await controller.plugins.database.teams.delete(event.team_id);
+        } catch (err) {
+            console.log(err);
+        }
+    });
+
+    controller.on('grid_migration_started', async (ctrl, event) => {
+
+        try {
+            let team = await controller.plugins.database.teams.get(event.team_id);
+
+            if (team) {
+                team.is_migrating = true;
+                await controller.plugins.database.teams.save(team);
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    });
+
+    controller.on('grid_migration_finished', async (ctrl, event) => {
+
+        try {
+            let team = await controller.plugins.database.teams.get(event.team_id);
+
+            if (team) {
+                team.is_migrating = false;
+                await controller.plugins.database.teams.save(team);
+            }
+        } catch (err) {
+            console.log(err);
         }
     });
 
