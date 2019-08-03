@@ -30,7 +30,7 @@ module.exports = controller => {
             controller.afterDialog(parent, async(bot, results) => {
                 console.log(results.answers);
             });
-            await bot.beginDialog(parent);
+            await bot.beginDialog('PARENT_ID');
 
             /* if (message.intent === 'connect_to_sf') {
                 let existingConn = await connFactory.getConnection(message.team_id, controller);
