@@ -35,9 +35,9 @@ controller.middleware.receive.use(getFilterMiddleware(controller));
 
 controller.ready(() => {
     controller.loadModules(__dirname + '/listeners');
-});
 
-authRouter(controller);
+    authRouter(controller);
+});
 
 async function getTokenForTeam(teamId) {
 

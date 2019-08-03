@@ -1,6 +1,6 @@
 
 const connFactory = require('../util/connection-factory');
-const logger = require('../common/logger');
+const logger = require('../util/logger');
 
 module.exports = {
     saveTeamId: (conn, teamData) => {

@@ -1,16 +1,49 @@
+const { BotkitConversation } = require('botkit');
 
-module.exports = function(controller) {
+const { checkTeamMigration } = require('./middleware/migration-filter');
+// const connFactory = require('../util/connection-factory');
+
+module.exports = controller => {
 
     /* controller.on('test_event', (p1, p2) => {
         console.log(p1, p2);
     }); */
 
     controller.on(
-        'direct_message',
+        'direct_message,direct_mention,mention',
         async (bot, message) => {
             console.log('nlp response----');
             console.log(message.intent, message.entities, message.fulfillment);
-            await bot.reply(message, `intent detected - ${message.intent}`);
+
+            let parent = new BotkitConversation('PARENT_ID', controller);
+            let child = new BotkitConversation('CHILD_ID', controller);
+
+            parent.say('I have a few questions...');
+            parent.addChildDialog('CHILD_ID', 'answers'); // capture responses in vars.questions
+
+            child.ask('Question 1!',[], 'question_1'); // no handler
+            child.ask('Question 2!',[], 'question_2'); // no handler
+            child.ask('Question 3!',[], 'question_3'); // no handler
+
+            controller.addDialog(parent);
+            controller.addDialog(child);
+            controller.afterDialog(parent, async(bot, results) => {
+                console.log(results.answers);
+            });
+            await bot.beginDialog(parent);
+
+            /* if (message.intent === 'connect_to_sf') {
+                let existingConn = await connFactory.getConnection(message.team_id, controller);
+
+                if (!existingConn) {
+                    const authUrl = connFactory.getAuthUrl(message.team_id);
+                    await bot.reply(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
+                } else {
+                    
+                }
+            } else {
+                await bot.reply(message, `intent detected - ${message.intent}`);
+            } */
         }
     );
 
@@ -123,6 +156,54 @@ module.exports = function(controller) {
         } catch (err) {
             console.log(err);
         }
+    });
+
+    controller.on('post_message', reqBody => {
+
+        reqBody.messages.forEach(async msg => {
+
+            try {
+                let teamIdsArray = reqBody.teamId.split(',');
+                const teams = await controller.plugins.database.teams.find({ id: { $in: teamIdsArray } });
+
+                if (!teams || teams.length == 0) {
+                    return console.log('team not found for id:', reqBody.teamId);
+                }
+
+                for (let index = 0, len = teams.length; index < len; index++) {
+                    const isTeamMigrating = await checkTeamMigration(teams[index].id, controller);
+
+                    if (!isTeamMigrating) {
+                        const bot = await controller.spawn(teams[index].id);
+
+                        if (msg.userEmail) {
+
+                            let userSearchResult = await bot.api.users.lookupByEmail({
+                                token: teams[index].bot.token,
+                                email: msg.userEmail
+                            });
+
+                            if (!userSearchResult) {
+                                return console.log('user not found in team ' + teams[index].id + ' for email:', msg.userEmail);
+                            }
+                            await bot.startPrivateConversation(userSearchResult.user.id);
+                            await bot.say(msg.text);
+                        } else {
+                            const channels = await controller.plugins.database.channels.find({ team_id: teams[index].id });
+
+                            if (channels && channels.length > 0) {
+                                await bot.startConversationInChannel(channels[0].id);
+                                await bot.say(msg.text);
+                            }
+                        }
+                    } else {
+                        console.log(`cannot post message for team id ${teams[index].id}, this team is in migration `);
+                    }
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        });
     });
 
 }

@@ -1,9 +1,8 @@
-
 const jsforce = require('jsforce');
-const { postForm } = require('../common/request-util');
-const logger = require('../common/logger');
+const { postForm } = require('../util/request-util');
+const logger = require('../util/logger');
 
-let openConnections = {};
+let connectionsCache = {};
 const oauth2 = new jsforce.OAuth2({
     clientId: process.env.SF_CLIENT_ID,
     clientSecret: process.env.SF_CLIENT_SECRET,
@@ -13,8 +12,8 @@ const oauth2 = new jsforce.OAuth2({
 async function findOrgByTeamId(teamId, botController) {
 
     try {
-        let orgs = await botController.storage.orgs.get(teamId);
-        return orgs;
+        let orgData = await botController.plugins.database.orgs.get(teamId);
+        return orgData;
     } catch (err) {
         throw err;
     }
@@ -34,14 +33,15 @@ async function getExistingConnection(teamId, botController) {
             });
 
             conn.on('refresh', (accessToken, res) => {
+
                 try {
                     connectedOrg.access_token = accessToken;
                     saveOrg(connectedOrg, botController);
                 } catch (err) {
-                    logger.log('connection refresh error:', err);
+                    console.log('connection refresh error:', err);
                 }
             });
-            openConnections[teamId] = conn;
+            connectionsCache[teamId] = conn;
             return conn;
         }
         return null;
@@ -50,10 +50,10 @@ async function getExistingConnection(teamId, botController) {
     }
 }
 
-function saveOrg(data, botController) {
+async function saveOrg(data, botController) {
 
     try {
-        botController.storage.orgs.save(data);
+        await botController.plugins.database.orgs.save(data);
     } catch (err) {
         throw err;
     }
@@ -62,7 +62,7 @@ function saveOrg(data, botController) {
 async function deleteOrg(teamId, botController) {
 
     try {
-        let delResult = await botController.storage.orgs.delete(teamId);
+        await botController.plugins.database.orgs.delete(teamId);
         return 'success';
     } catch (err) {
         throw err;
@@ -76,8 +76,8 @@ module.exports = {
     },
     getConnection: async (teamId, botController) => {
 
-        if (teamId in openConnections) {
-            return openConnections[teamId];
+        if (teamId in connectionsCache) {
+            return connectionsCache[teamId];
         }
 
         try {
@@ -89,8 +89,8 @@ module.exports = {
     },
     connect: async (authCode, botController, teamId) => {
 
-        if (teamId in openConnections) {
-            return openConnections[teamId];
+        if (teamId in connectionsCache) {
+            return connectionsCache[teamId];
         }
 
         try {
@@ -124,7 +124,7 @@ module.exports = {
                 revoke_url: conn.oauth2.revokeServiceUrl
             };
             saveOrg(org, botController);
-            openConnections[teamId] = conn;
+            connectionsCache[teamId] = conn;
             return conn;
         } catch (err) {
             throw err;
@@ -133,10 +133,10 @@ module.exports = {
     revoke: async (orgData, botController) => {
 
         try {
-            const result = await postForm(orgData.revokeUrl, { token: orgData.refreshToken });
-            delete openConnections[orgData.teamId];
-            const deleteResult = await deleteOrg(orgData.teamId, botController);
-            return deleteResult;
+            await postForm(orgData.revokeUrl, { token: orgData.refreshToken });
+            delete connectionsCache[orgData.teamId];
+            await deleteOrg(orgData.teamId, botController);
+            return 'sf token revoke success';
         } catch (err) {
             throw err;
         }
