@@ -5,6 +5,33 @@ const { checkTeamMigration } = require('./middleware/migration-filter');
 
 module.exports = controller => {
 
+    let convo = new BotkitConversation('tacos', controller);
+    convo.say('SOMEONE SAID TACOS!');
+    convo.ask('Do you want to eat a taco?', [
+        {
+            pattern: 'yes',
+            default: true,
+            handler: async(response, convo, bot) => {
+                await convo.gotoThread('yes_tacos');
+            }
+        },
+        {
+            pattern: 'no',
+            handler: async(response, convo, bot) => {
+                await convo.gotoThread('no_tacos');
+            }
+        }
+    ], 'wants_taco');
+
+    convo.addMessage('Hooray for tacos!', 'yes_tacos');
+    convo.addMessage('ERROR: Tacos missing!!', 'no_tacos');
+
+    convo.after(async(results, bot) => {
+        console.log(results);
+    })
+    // add to the controller to make it available for later.
+    controller.addDialog(convo);
+
     /* controller.on('test_event', (p1, p2) => {
         console.log(p1, p2);
     }); */
@@ -15,22 +42,7 @@ module.exports = controller => {
             console.log('nlp response----');
             console.log(message.intent, message.entities, message.fulfillment);
 
-            let parent = new BotkitConversation('PARENT_ID', controller);
-            let child = new BotkitConversation('CHILD_ID', controller);
-
-            parent.say('I have a few questions...');
-            parent.addChildDialog('CHILD_ID', 'answers'); // capture responses in vars.questions
-
-            child.ask('Question 1!',[], 'question_1'); // no handler
-            child.ask('Question 2!',[], 'question_2'); // no handler
-            child.ask('Question 3!',[], 'question_3'); // no handler
-
-            controller.addDialog(parent);
-            controller.addDialog(child);
-            controller.afterDialog(parent, async(bot, results) => {
-                console.log(results.answers);
-            });
-            await bot.beginDialog('PARENT_ID');
+            await bot.beginDialog('tacos');
 
             /* if (message.intent === 'connect_to_sf') {
                 let existingConn = await connFactory.getConnection(message.team_id, controller);
