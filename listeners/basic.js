@@ -21,7 +21,6 @@ module.exports = controller => {
             console.log('nlp response----');
             console.log(message.intent, message.entities, message.fulfillment);
 
-            
             if (message.text === 'start dialog') {
                 await bot.beginDialog('my_dialog_1');
             } else if (message.text === 'test channel') {
@@ -32,7 +31,7 @@ module.exports = controller => {
                     await bot.say('hello in channel');
                 }
             } else {
-                await bot.reply('hello');
+                await bot.reply(message, 'hello');
             }
 
             /* if (message.intent === 'connect_to_sf') {
