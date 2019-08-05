@@ -5,31 +5,14 @@ const { checkTeamMigration } = require('./middleware/migration-filter');
 
 module.exports = controller => {
 
-    let convo = new BotkitConversation('tacos', controller);
-    convo.say('SOMEONE SAID TACOS!');
-    convo.ask('Do you want to eat a taco?', [
-        {
-            pattern: 'yes',
-            default: true,
-            handler: async(response, convo, bot) => {
-                await convo.gotoThread('yes_tacos');
-            }
-        },
-        {
-            pattern: 'no',
-            handler: async(response, convo, bot) => {
-                await convo.gotoThread('no_tacos');
-            }
-        }
-    ], 'wants_taco');
-
-    convo.addMessage('Hooray for tacos!', 'yes_tacos');
-    convo.addMessage('ERROR: Tacos missing!!', 'no_tacos');
-
+    let convo = new BotkitConversation('my_dialog_1', controller);
+    convo.ask('What is your name?', [], 'name');
+    convo.ask('What is your age?', [], 'age');
+    convo.ask('What is your favorite color?', [], 'color');
     convo.after(async(results, bot) => {
         console.log(results);
-    })
-    // add to the controller to make it available for later.
+        await bot.say('conversation complete!');
+    });
     controller.addDialog(convo);
 
     /* controller.on('test_event', (p1, p2) => {
@@ -42,7 +25,7 @@ module.exports = controller => {
             console.log('nlp response----');
             console.log(message.intent, message.entities, message.fulfillment);
 
-            await bot.beginDialog('tacos');
+            await bot.beginDialog('my_dialog_1');
 
             /* if (message.intent === 'connect_to_sf') {
                 let existingConn = await connFactory.getConnection(message.team_id, controller);
