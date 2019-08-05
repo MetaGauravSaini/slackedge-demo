@@ -1,25 +1,6 @@
 
 module.exports = controller => {
 
-    controller.webserver.get('/test', async (req, res) => {
-
-        /* const param1 = 'hello';
-        const param2 = 'world';
-        controller.trigger('test_event', param1, param2); */
-
-        /* try {
-            const teamData = await controller.plugins.database.teams.get('TE7310QP4');
-            console.log('teams ', teamData);
-            const channelData = await controller.plugins.database.channels.all();
-            console.log('channels ', channelData);
-            const orgData = await controller.plugins.database.orgs.find({ id: 'test' });
-            console.log('orgs ', orgData);
-        } catch (err) {
-            console.log(err);
-        } */
-        res.send({ ok: true });
-    });
-
     controller.webserver.get('/login', (req, res) => {
         res.redirect(controller.adapter.getInstallLink());
     });

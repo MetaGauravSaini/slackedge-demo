@@ -9,15 +9,11 @@ module.exports = controller => {
     convo.ask('What is your name?', [], 'name');
     convo.ask('What is your age?', [], 'age');
     convo.ask('What is your favorite color?', [], 'color');
-    convo.after(async(results, bot) => {
+    /* convo.after(async(results, bot) => {
         console.log(results);
-        await bot.say('conversation complete!');
-    });
-    controller.addDialog(convo);
-
-    /* controller.on('test_event', (p1, p2) => {
-        console.log(p1, p2);
+        // await bot.say('conversation complete!');
     }); */
+    controller.addDialog(convo);
 
     controller.on(
         'direct_message,direct_mention,mention',
