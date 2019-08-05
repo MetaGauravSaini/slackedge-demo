@@ -2,11 +2,16 @@ require('dotenv').config();
 
 const { Botkit } = require('botkit');
 const { SlackAdapter, SlackMessageTypeMiddleware, SlackEventMiddleware } = require('botbuilder-adapter-slack');
+const { MongoDbStorage } = require('botbuilder-storage-mongodb');
 
 // const { getFilterMiddleware } = require('./listeners/middleware/migration-filter');
 // const dialogflowMiddleware = require('./df-middleware');
 const mongoProvider = require('./db/mongo-provider')({
     mongoUri: process.env.MONGO_CONNECTION_STRING
+});
+const mongoStateStore = new MongoDbStorage({
+    url: process.env.MONGO_BASE_URI,
+    database: 'slackedge-demo'
 });
 const authRouter = require('./routes/oauth');
 
@@ -25,7 +30,7 @@ adapter.use(new SlackMessageTypeMiddleware());
 const controller = new Botkit({
     webhook_uri: '/slack/receive',
     adapter,
-    webserver_middlewares: []
+    storage: mongoStateStore
 });
 
 controller.addPluginExtension('database', mongoProvider);

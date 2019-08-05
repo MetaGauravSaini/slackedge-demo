@@ -23,13 +23,6 @@ module.exports = controller => {
 
             if (message.text === 'start dialog') {
                 await bot.beginDialog('my_dialog_1');
-            } else if (message.text === 'test channel') {
-                const channels = await controller.plugins.database.channels.find({ team_id: message.team_id });
-
-                if (channels && channels.length > 0) {
-                    await bot.startConversationInChannel(channels[0].id);
-                    await bot.say('hello in channel');
-                }
             } else {
                 await bot.reply(message, 'hello');
             }

@@ -16,6 +16,7 @@
     "dependencies": {
         "body-parser": "^1.18.3",
         "botbuilder-adapter-slack": "^1.0.4",
+        "botbuilder-storage-mongodb": "^0.9.5",
         "botkit": "^4.5.0",
         "botkit-middleware-dialogflow": "^2.1.0",
         "dotenv": "^7.0.0",
