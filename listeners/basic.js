@@ -21,7 +21,19 @@ module.exports = controller => {
             console.log('nlp response----');
             console.log(message.intent, message.entities, message.fulfillment);
 
-            await bot.beginDialog('my_dialog_1');
+            
+            if (message.text === 'start dialog') {
+                await bot.beginDialog('my_dialog_1');
+            } else if (message.text === 'test channel') {
+                const channels = await controller.plugins.database.channels.find({ team_id: message.team_id });
+
+                if (channels && channels.length > 0) {
+                    await bot.startConversationInChannel(channels[0].id);
+                    await bot.say('hello in channel');
+                }
+            } else {
+                await bot.reply('hello');
+            }
 
             /* if (message.intent === 'connect_to_sf') {
                 let existingConn = await connFactory.getConnection(message.team_id, controller);
