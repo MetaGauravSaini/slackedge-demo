@@ -9,10 +9,6 @@ const { MongoDbStorage } = require('botbuilder-storage-mongodb');
 const mongoProvider = require('./db/mongo-provider')({
     mongoUri: process.env.MONGO_CONNECTION_STRING
 });
-const mongoStateStore = new MongoDbStorage({
-    url: process.env.MONGO_BASE_URI,
-    database: 'slackedge-demo'
-});
 const authRouter = require('./routes/oauth');
 
 const adapter = new SlackAdapter({
@@ -29,8 +25,7 @@ adapter.use(new SlackMessageTypeMiddleware());
 
 const controller = new Botkit({
     webhook_uri: '/slack/receive',
-    adapter,
-    storage: mongoStateStore
+    adapter
 });
 
 controller.addPluginExtension('database', mongoProvider);

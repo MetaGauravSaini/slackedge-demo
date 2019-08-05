@@ -12,10 +12,9 @@ module.exports = controller => {
     });
     controller.dialogSet.add(convo);
 
-    // later on, trigger this dialog by its id
     controller.on('direct_message', async(bot, message) => {
         await bot.beginDialog('foo');
-    })
+    });
 
     controller.on('oauth_success', async authData => {
 
