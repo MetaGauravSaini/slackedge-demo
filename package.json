@@ -15,16 +15,12 @@
     "license": "ISC",
     "dependencies": {
         "body-parser": "^1.18.3",
-        "botbuilder-adapter-slack": "^1.0.3",
+        "botbuilder-adapter-slack": "^1.0.4",
         "botkit": "^4.5.0",
         "botkit-middleware-dialogflow": "^2.1.0",
         "dotenv": "^7.0.0",
         "express": "^4.16.4",
         "jsforce": "^1.9.1",
         "mongoose": "^5.5.0"
-    },
-    "engines": {
-        "node": "10.15.1",
-        "npm": "6.4.1"
     }
 }
