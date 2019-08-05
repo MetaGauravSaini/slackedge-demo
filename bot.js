@@ -3,7 +3,7 @@ require('dotenv').config();
 const { Botkit } = require('botkit');
 const { SlackAdapter, SlackMessageTypeMiddleware, SlackEventMiddleware } = require('botbuilder-adapter-slack');
 
-const { getFilterMiddleware } = require('./listeners/middleware/migration-filter');
+// const { getFilterMiddleware } = require('./listeners/middleware/migration-filter');
 // const dialogflowMiddleware = require('./df-middleware');
 const mongoProvider = require('./db/mongo-provider')({
     mongoUri: process.env.MONGO_CONNECTION_STRING
@@ -31,7 +31,7 @@ const controller = new Botkit({
 controller.addPluginExtension('database', mongoProvider);
 
 // controller.middleware.receive.use(dialogflowMiddleware.receive);
-controller.middleware.receive.use(getFilterMiddleware(controller));
+// controller.middleware.receive.use(getFilterMiddleware(controller));
 
 controller.ready(() => {
     controller.loadModules(__dirname + '/listeners');
