@@ -5,38 +5,14 @@ const { checkTeamMigration } = require('./middleware/migration-filter');
 
 module.exports = controller => {
 
-    let convo = new BotkitConversation('my_dialog_1', controller);
-    convo.ask('What is your name?', [], 'name');
-    convo.ask('What is your age?', [], 'age');
-    convo.ask('What is your favorite color?', [], 'color');
-    /* convo.after(async(results, bot) => {
-        console.log(results);
-        // await bot.say('conversation complete!');
-    }); */
-    controller.addDialog(convo);
+    const my_dialog = new BotkitConversation('my_dialog', controller);
+    my_dialog.say('Hello');
+    controller.addDialog(my_dialog);
 
-    controller.on(
-        'direct_message,direct_mention,mention',
-        async (bot, message) => {
-            console.log('nlp response----');
-            console.log(message.intent, message.entities, message.fulfillment);
+    controller.on('direct_message', async(bot, message) => {
+        await bot.beginDialog('my_dialog');
+    });
 
-            await bot.beginDialog('my_dialog_1');
-
-            /* if (message.intent === 'connect_to_sf') {
-                let existingConn = await connFactory.getConnection(message.team_id, controller);
-
-                if (!existingConn) {
-                    const authUrl = connFactory.getAuthUrl(message.team_id);
-                    await bot.reply(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
-                } else {
-                    
-                }
-            } else {
-                await bot.reply(message, `intent detected - ${message.intent}`);
-            } */
-        }
-    );
 
     controller.on('oauth_success', async authData => {
 
