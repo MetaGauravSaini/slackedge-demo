@@ -21,7 +21,7 @@
         "botkit-middleware-dialogflow": "^2.1.0",
         "dotenv": "^7.0.0",
         "express": "^4.16.4",
-        "jsforce": "^1.9.1",
+        "jsforce": "^1.9.3",
         "mongoose": "^5.5.0"
     }
 }
